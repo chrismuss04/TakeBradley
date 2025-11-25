@@ -14,7 +14,7 @@ public class LootCrate implements Entity {
 
     private Inventory inventory;
 
-    public LootCrate(UUID id, String name, int x, int y) {
+    public LootCrate(String name, int x, int y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;
