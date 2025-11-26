@@ -80,6 +80,11 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     }
 
     @Override
+    public int getSelectedSlotIndex() {
+        return selectedSlotIndex;
+    }
+
+    @Override
     public UUID getId() {
         return id;
     }
@@ -107,6 +112,11 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     @Override
     public void update(double deltaTime) {
 
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private double speed = 2.0;
     private boolean isAlive = true;
     private Inventory inventory;
+    private int selectedSlotIndex = 0;
 
     public BradleyAPC(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -79,6 +80,11 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     }
 
     @Override
+    public int getSelectedSlotIndex() {
+        return selectedSlotIndex;
+    }
+
+    @Override
     public UUID getId() {
         return id;
     }
@@ -106,6 +112,11 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     @Override
     public void update(double deltaTime) {
 
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 
     @Override

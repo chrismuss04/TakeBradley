@@ -1,5 +1,7 @@
 package com.rust.exfil.takebradley.model.entity.interfaces;
 
+import com.rust.exfil.takebradley.model.inventory.Inventory;
+
 import java.util.UUID;
 
 public interface Entity {
@@ -9,4 +11,5 @@ public interface Entity {
     double getY();
     boolean isAlive();
     void update(double deltaTime);
+    Inventory getInventory();
 }

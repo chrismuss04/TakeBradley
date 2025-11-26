@@ -11,7 +11,6 @@ public class LootCrate implements Entity {
     private int x;
     private int y;
     private boolean isAlive;
-
     private Inventory inventory;
 
     public LootCrate(String name, int x, int y) {

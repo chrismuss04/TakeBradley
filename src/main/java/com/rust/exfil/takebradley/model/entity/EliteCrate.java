@@ -11,7 +11,6 @@ public class EliteCrate implements Entity {
     private int x;
     private int y;
     private boolean isAlive;
-
     private Inventory inventory;
 
     public EliteCrate(String name, int x, int y) {

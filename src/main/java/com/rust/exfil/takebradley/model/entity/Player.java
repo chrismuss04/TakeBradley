@@ -88,6 +88,11 @@ public class Player implements Entity, Movable, Combatant {
     }
 
     @Override
+    public int getSelectedSlotIndex() {
+        return selectedSlotIndex;
+    }
+
+    @Override
     public UUID getId() {
         return id;
     }

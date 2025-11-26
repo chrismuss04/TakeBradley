@@ -79,6 +79,11 @@ public class Scientist implements Entity, Combatant {
     }
 
     @Override
+    public int getSelectedSlotIndex() {
+        return selectedSlotIndex;
+    }
+
+    @Override
     public UUID getId() {
         return id;
     }

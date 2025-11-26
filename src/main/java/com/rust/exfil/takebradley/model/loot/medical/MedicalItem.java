@@ -1,6 +1,19 @@
 package com.rust.exfil.takebradley.model.loot.medical;
 
+import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 
-public class MedicalItem implements LootItem {
+public abstract class MedicalItem implements LootItem {
+    String name;
+    String description;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
 }

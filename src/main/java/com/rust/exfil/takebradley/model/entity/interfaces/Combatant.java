@@ -9,4 +9,6 @@ public interface Combatant {
 
     void fireWeapon();
     void reload();
+
+    int getSelectedSlotIndex();
 }
