@@ -1,10 +1,14 @@
 package com.rust.exfil.takebradley.model.loot.medical;
 
 public class MedFactory {
-    public Bandage createBandage() {
-        return new Bandage();
-    }
-    public Syringe createSyringe() {
-        return new Syringe();
+    public static MedicalItem create(MedType type) {
+        switch (type) {
+            case BANDAGE:
+                return new Bandage();
+            case SYRINGE:
+                return new Syringe();
+            default:
+                throw new IllegalArgumentException("Unknown medical item type: " + type);
+        }
     }
 }

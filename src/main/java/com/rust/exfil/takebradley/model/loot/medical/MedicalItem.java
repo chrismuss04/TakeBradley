@@ -1,6 +1,5 @@
 package com.rust.exfil.takebradley.model.loot.medical;
 
-import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 
 public abstract class MedicalItem implements LootItem {

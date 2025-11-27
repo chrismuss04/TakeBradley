@@ -1,16 +1,18 @@
 package com.rust.exfil.takebradley.model.loot.gear;
 
 public class GearFactory {
-    public HazmatGear createHazmatGear() {
-        return new HazmatGear();
-    }
-    public WolfHeadGear createWolfHeadGear() {
-        return new WolfHeadGear();
-    }
-    public RoadSignGear createRoadSignGear() {
-        return new RoadSignGear();
-    }
-    public HeavyPotGear createHeavyPotGear() {
-        return new HeavyPotGear();
+    public static GearItem create(GearType type) {
+        switch (type) {
+            case HAZMAT:
+                return new HazmatGear();
+            case ROADSIGN:
+                return new RoadSignGear();
+            case WOLFHEAD:
+                return new WolfHeadGear();
+            case HEAVYPOT:
+                return new HeavyPotGear();
+            default:
+                throw new IllegalArgumentException("Unknown gear item type: " + type);
+        }
     }
 }

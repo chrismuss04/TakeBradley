@@ -1,13 +1,16 @@
 package com.rust.exfil.takebradley.model.loot.ammo;
 
 public class AmmoFactory {
-    public PistolAmmo createPistolAmmo() {
+  public static AmmoItem create(AmmoType type) {
+    switch (type) {
+      case PISTOL:
         return new PistolAmmo();
-    }
-    public RifleAmmo createRifleAmmo() {
+      case RIFLE:
         return new RifleAmmo();
-    }
-    public RocketAmmo createRocketAmmo() {
+      case ROCKET:
         return new RocketAmmo();
+      default:
+        throw new IllegalArgumentException("Unknown AmmoType: " + type);
     }
+  }
 }
