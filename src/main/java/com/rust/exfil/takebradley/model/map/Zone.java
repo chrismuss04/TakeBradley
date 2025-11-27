@@ -26,7 +26,7 @@ public abstract class Zone {
     public double getHeight() {
         return height;
     }
-    public boolean contains(int px, int py) {
+    public boolean contains(double px, double py) {
         return px >= x && px < x + width &&
                 py >= y && py < y + height;
     }
