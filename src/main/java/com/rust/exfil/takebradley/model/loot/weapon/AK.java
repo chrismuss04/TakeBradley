@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.weapon;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class AK extends WeaponItem{
-    public AK() {
+    AK() {
         this.name = "AK";
         this.description = "A powerful assault rifle.";
         this.magazineSize = 30;

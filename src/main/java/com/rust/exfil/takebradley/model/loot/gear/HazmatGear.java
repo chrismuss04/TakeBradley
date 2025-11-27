@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.gear;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class HazmatGear extends GearItem {
-    public HazmatGear() {
+    HazmatGear() {
         this.name = "Hazmat Suit";
         this.description = "Useful in radioactive environments.";
     }

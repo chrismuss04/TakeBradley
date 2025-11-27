@@ -4,7 +4,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 public class P2 extends WeaponItem {
-    public P2() {
+    P2() {
         this.name = "P2";
         this.description = "A semi-automatic pistol chambered in 9mm.";
         this.magazineSize = 10;

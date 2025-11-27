@@ -4,7 +4,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class Syringe extends MedicalItem{
-    public Syringe() {
+    Syringe() {
         this.name = "Syringe";
         this.description = "A medical syringe used to heal moderate damage";
     }

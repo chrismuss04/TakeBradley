@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.weapon;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class RocketLauncher extends WeaponItem{
-    public RocketLauncher() {
+    RocketLauncher() {
         this.name = "Rocket Launcher";
         this.description = "A heavy weapon that fires explosive rockets.";
         this.magazineSize = 1;

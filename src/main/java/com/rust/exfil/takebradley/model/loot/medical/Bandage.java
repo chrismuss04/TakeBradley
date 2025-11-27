@@ -4,7 +4,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class Bandage extends MedicalItem{
-    public Bandage() {
+    Bandage() {
         this.name = "Bandage";
         this.description = "A simple bandage used to heal minor damage";
     }

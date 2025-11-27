@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.ammo;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class RocketAmmo extends AmmoItem{
-    public RocketAmmo() {
+    RocketAmmo() {
         this.name = "Rocket Ammo";
         this.description = "Ammunition for rocket launchers.";
     }

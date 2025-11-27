@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.weapon;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class MP5 extends WeaponItem{
-    public MP5() {
+    MP5() {
         this.name = "MP5";
         this.description = "A compact submachine gun chambered in 9mm.";
         this.magazineSize = 30;
