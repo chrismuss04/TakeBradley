@@ -19,6 +19,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
+    private double damageResistance;
 
     NpcPlayer(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -82,6 +83,16 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     @Override
     public int getSelectedSlotIndex() {
         return selectedSlotIndex;
+    }
+
+    @Override
+    public double getDamageResistance() {
+        return damageResistance;
+    }
+
+    @Override
+    public void setDamageResistance(double resistance) {
+        this.damageResistance = resistance;
     }
 
     @Override

@@ -11,4 +11,7 @@ public interface Combatant {
     void reload();
 
     int getSelectedSlotIndex();
+
+    double getDamageResistance();
+    void setDamageResistance(double resistance);
 }

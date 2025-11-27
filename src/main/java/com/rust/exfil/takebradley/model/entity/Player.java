@@ -22,6 +22,7 @@ public class Player implements Entity, Movable, Combatant {
     private Inventory inventory;
     private Stash stash;
     private int selectedSlotIndex = 0;
+    private double damageResistance = 0.0;
 
     Player(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -90,6 +91,16 @@ public class Player implements Entity, Movable, Combatant {
     @Override
     public int getSelectedSlotIndex() {
         return selectedSlotIndex;
+    }
+
+    @Override
+    public double getDamageResistance() {
+        return damageResistance;
+    }
+
+    @Override
+    public void setDamageResistance(double resistance) {
+        this.damageResistance = resistance;
     }
 
     @Override

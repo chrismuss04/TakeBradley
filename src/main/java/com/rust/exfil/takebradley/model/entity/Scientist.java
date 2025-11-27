@@ -18,6 +18,7 @@ public class Scientist implements Entity, Combatant {
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
+    private double damageResistance = 0.0;
 
     Scientist(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -81,6 +82,16 @@ public class Scientist implements Entity, Combatant {
     @Override
     public int getSelectedSlotIndex() {
         return selectedSlotIndex;
+    }
+
+    @Override
+    public double getDamageResistance() {
+        return damageResistance;
+    }
+
+    @Override
+    public void setDamageResistance(double resistance) {
+        this.damageResistance = resistance;
     }
 
     @Override
