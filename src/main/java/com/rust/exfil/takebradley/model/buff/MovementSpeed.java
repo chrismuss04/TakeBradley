@@ -6,12 +6,12 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
 public class MovementSpeed implements Buff{
     String name;
     String description;
-    double speedDecreasePercent;
+    double speedModifyPercent;
 
-    MovementSpeed(double speedDecreasePercent) {
-        this.speedDecreasePercent = speedDecreasePercent;
+    MovementSpeed(double speedModifyPercent) {
+        this.speedModifyPercent = speedModifyPercent;
         this.name = "Movement Speed Decrease";
-        this.description = "-" + (int)(speedDecreasePercent * 100) + "% movement speed";
+        this.description = "-" + (int)(speedModifyPercent * 100) + "% movement speed";
     }
 
     @Override
@@ -19,7 +19,7 @@ public class MovementSpeed implements Buff{
         if (combatant instanceof Movable) {
             Movable movableCombatant = (Movable) combatant;
             double currentSpeed = movableCombatant.getSpeed();
-            movableCombatant.setSpeed(currentSpeed * (1 - speedDecreasePercent));
+            movableCombatant.setSpeed(currentSpeed * (1 + speedModifyPercent));
         }
     }
 
@@ -28,7 +28,7 @@ public class MovementSpeed implements Buff{
         if (combatant instanceof Movable) {
             Movable movableCombatant = (Movable) combatant;
             double currentSpeed = movableCombatant.getSpeed();
-            movableCombatant.setSpeed(currentSpeed / (1 - speedDecreasePercent));
+            movableCombatant.setSpeed(currentSpeed / (1 + speedModifyPercent));
         }
     }
 
