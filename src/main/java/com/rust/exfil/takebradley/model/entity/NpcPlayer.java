@@ -20,7 +20,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     private Inventory inventory;
     private int selectedSlotIndex = 0;
 
-    public NpcPlayer(String name, double x, double y) {
+    NpcPlayer(String name, double x, double y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

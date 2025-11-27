@@ -23,7 +23,7 @@ public class Player implements Entity, Movable, Combatant {
     private Stash stash;
     private int selectedSlotIndex = 0;
 
-    public Player(String name, double x, double y) {
+    Player(String name, double x, double y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

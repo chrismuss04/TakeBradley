@@ -20,7 +20,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private Inventory inventory;
     private int selectedSlotIndex = 0;
 
-    public BradleyAPC(String name, double x, double y) {
+    BradleyAPC(String name, double x, double y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

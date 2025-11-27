@@ -19,7 +19,7 @@ public class Scientist implements Entity, Combatant {
     private Inventory inventory;
     private int selectedSlotIndex = 0;
 
-    public Scientist(String name, double x, double y) {
+    Scientist(String name, double x, double y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

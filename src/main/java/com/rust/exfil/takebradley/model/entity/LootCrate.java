@@ -13,7 +13,7 @@ public class LootCrate implements Entity {
     private boolean isAlive;
     private Inventory inventory;
 
-    public LootCrate(String name, int x, int y) {
+    LootCrate(String name, int x, int y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

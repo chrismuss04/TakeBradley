@@ -13,7 +13,7 @@ public class EliteCrate implements Entity {
     private boolean isAlive;
     private Inventory inventory;
 
-    public EliteCrate(String name, int x, int y) {
+    EliteCrate(String name, int x, int y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;
