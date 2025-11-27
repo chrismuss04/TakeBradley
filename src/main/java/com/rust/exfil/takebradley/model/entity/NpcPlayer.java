@@ -43,7 +43,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     @Override
     public void takeDamage(int damage) {
         if (!isAlive) return;
-        this.health -= damage;
+        this.health -= (int) (damage * (1 - damageResistance));
         if (this.health <= 0) {
             this.health = 0;
             die();
@@ -66,6 +66,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
 
     @Override
     public void fireWeapon() {
+        if (!isAlive) return;
         LootItem item = inventory.getItem(selectedSlotIndex);
         if (item instanceof WeaponItem) {
             item.use(this);
@@ -74,6 +75,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
 
     @Override
     public void reload() {
+        if (!isAlive) return;
         LootItem item = inventory.getItem(selectedSlotIndex);
         if (item instanceof WeaponItem) {
             ((WeaponItem) item).reload();

@@ -76,7 +76,7 @@ public class Inventory {
     public List<LootItem> removeAllItems() {
         List<LootItem> removed = new ArrayList<>();
         for (InventorySlot slot : slots) {
-            if (slot.isEmpty()) {
+            if (!slot.isEmpty()) {
                 removed.add(slot.removeItem());
             }
         }

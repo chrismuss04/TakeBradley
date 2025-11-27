@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class EntityFactory {
-    public static Entity createEntity(EntityType type, String name, int x, int y) {
+    public static Entity createEntity(EntityType type, String name, double x, double y) {
         switch (type) {
             case PLAYER:
                 return new Player(name, x, y);

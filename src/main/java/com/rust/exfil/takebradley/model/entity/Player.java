@@ -48,7 +48,7 @@ public class Player implements Entity, Movable, Combatant {
     @Override
     public void takeDamage(int damage) {
         if (!this.isAlive) return;
-        this.health -= damage;
+        this.health -= (int) (damage * (1 - this.damageResistance));
         if (this.health <= 0) {
             this.health = 0;
             die();

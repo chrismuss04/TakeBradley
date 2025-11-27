@@ -8,12 +8,11 @@ import java.util.UUID;
 public class EliteCrate implements Entity {
     private final UUID id;
     private final String name;
-    private int x;
-    private int y;
+    private final double x, y;
     private boolean isAlive;
     private Inventory inventory;
 
-    EliteCrate(String name, int x, int y) {
+    EliteCrate(String name, double x, double y) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.x = x;

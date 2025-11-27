@@ -7,12 +7,11 @@ import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 import java.util.UUID;
-import java.util.List;
 
 public class Scientist implements Entity, Combatant {
     private final UUID id;
     private final String name;
-    private double x, y;
+    private final double x, y;
     private int health;
     private final int maxHealth = 100;
     private boolean isAlive = true;
@@ -42,7 +41,7 @@ public class Scientist implements Entity, Combatant {
     @Override
     public void takeDamage(int damage) {
         if (!isAlive) return;
-        this.health -= damage;
+        this.health -= (int) (damage * (1 - damageResistance));
         if (this.health <= 0) {
             this.health = 0;
             die();
@@ -137,7 +136,6 @@ public class Scientist implements Entity, Combatant {
             this.selectedSlotIndex = slotIndex;
 
         }
-
     }
 
     public LootItem getEquippedItem() {
