@@ -132,6 +132,14 @@ public class NpcPlayer implements Entity, Movable, Combatant{
         return inventory;
     }
 
+    public void equipItem(int slotIndex) {
+        if (slotIndex >= 0 && slotIndex < inventory.getSize()) {
+            this.selectedSlotIndex = slotIndex;
+
+        }
+
+    }
+
     @Override
     public void move(double dx, double dy) {
         if (!isAlive) return;

@@ -87,7 +87,7 @@ public class Inventory {
         return capacity;
     }
 
-    private boolean isValidIndex(int index) {
+    boolean isValidIndex(int index) {
         return index >= 0 && index < capacity;
     }
 
