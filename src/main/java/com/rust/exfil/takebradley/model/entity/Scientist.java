@@ -26,7 +26,7 @@ public class Scientist implements Entity, Combatant {
         this.x = x;
         this.y = y;
         this.health = maxHealth;
-        this.inventory = new Inventory(5);
+        this.inventory = new Inventory(5, this);
     }
 
     @Override

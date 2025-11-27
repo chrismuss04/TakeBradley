@@ -27,7 +27,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         this.x = x;
         this.y = y;
         this.health = maxHealth;
-        this.inventory = new Inventory(1);
+        this.inventory = new Inventory(1, this);
     }
 
     @Override

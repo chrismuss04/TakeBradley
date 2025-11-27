@@ -19,7 +19,7 @@ public class LootCrate implements Entity {
         this.x = x;
         this.y = y;
         this.isAlive = false;
-        this.inventory = new Inventory(10); // Example size
+        this.inventory = new Inventory(10, this); // Example size
     }
 
     @Override

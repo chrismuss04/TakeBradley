@@ -27,7 +27,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
         this.x = x;
         this.y = y;
         this.health = maxHealth;
-        this.inventory = new Inventory(8);
+        this.inventory = new Inventory(8, this);
     }
 
     @Override

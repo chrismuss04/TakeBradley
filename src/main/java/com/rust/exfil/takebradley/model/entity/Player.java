@@ -30,8 +30,8 @@ public class Player implements Entity, Movable, Combatant {
         this.x = x;
         this.y = y;
         this.health = maxHealth;
-        this.inventory = new Inventory(10);
-        this.stash = new Stash();
+        this.inventory = new Inventory(10, this);
+        this.stash = new Stash(this);
     }
 
 

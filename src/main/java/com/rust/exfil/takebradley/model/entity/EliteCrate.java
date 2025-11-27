@@ -19,7 +19,7 @@ public class EliteCrate implements Entity {
         this.x = x;
         this.y = y;
         this.isAlive = false;
-        this.inventory = new Inventory(10);
+        this.inventory = new Inventory(10, this);
     }
 
     @Override

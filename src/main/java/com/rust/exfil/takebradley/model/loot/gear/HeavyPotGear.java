@@ -14,6 +14,6 @@ public class HeavyPotGear extends GearItem {
 
     @Override
     public void use(Entity user) {
-        user.getInventory().setEquippedItem(this);
+        user.getInventory().setEquippedGear(this);
     }
 }
