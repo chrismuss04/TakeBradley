@@ -8,13 +8,6 @@
 
 This project is a merge of a classic tank war concept with modern extraction-shooter mechanics. Players control a tank or human/AI characters, loot weapons and gear, and try to survive raids by defeating enemies and safely extracting with their loot.
 
-Key concepts implemented:
-
-- **Object-Oriented Design (OOD)**: Encapsulation, inheritance, and polymorphism.
-- **Design Patterns**: Factory, Strategy, Observer, Singleton, Decorator/Buff, Flyweight.
-- **MVC Architecture**: Clear separation of Model, View, and Controller layers.
-- **Game Mechanics**: AI behaviors, loot, extraction, inventory, and weapon management.
-
 ---
 
 ## Features
@@ -26,10 +19,10 @@ Key concepts implemented:
   - Equip different gear sets with buffs and debuffs.
   
 - **AI Players**
-  - Roam, loot, fight other players, and behave like NPC scavengers.
+  - Roam, fight other players, and behave like NPC scavengers.
   - Spawn with random gear and weapons (P2, MP5, AK).
   
-- **Scientists (NPCLootGuards)**
+- **Scientists**
   - Stationary guards protecting loot containers.
   - Spawn with P2 or MP5 and Hazmat gear.
   
@@ -38,7 +31,7 @@ Key concepts implemented:
   - Shoots rockets at players, drops high-value loot on death.
   
 - **Loot & Inventory**
-  - Weapons, ammo, gear sets, consumables, and containers (MilCrates, Barrels).
+  - Weapons, ammo, gear sets, consumables, and loot containers.
   - Inventory is temporary; stash persists across raids.
   
 - **Extraction Zones**
@@ -52,7 +45,7 @@ Key concepts implemented:
 - **Buff/Decorator System**: Dynamically applies gear or temporary item buffs to players.
 - **Flyweight System**: Shared immutable resources (sprites, audio clips, loot configs) to optimize memory usage.
 - **Factories**: Create entities, weapons, and loot objects consistently.
-- **Strategies**: AI movement and loot behaviors separated for clean SRP.
+- **Strategies**: AI movement and loot behaviors separated for SRP.
 
 ---
 
@@ -61,10 +54,8 @@ Key concepts implemented:
 /src 
 - /app : Controllers: Game, Input, Extraction, Spawn
 - /model : Game entities, loot, weapons, inventory
-- /factories : Factories for tanks, loot, weapons
 - /strategies : AI movement and loot behaviors
 - /decorators : Buff/decorator system
-- /flyweight : Shared sprites, loot configs, sounds
 - /systems : Event system, game mechanics
 - /view : Renderer, HUD, sprites
 
