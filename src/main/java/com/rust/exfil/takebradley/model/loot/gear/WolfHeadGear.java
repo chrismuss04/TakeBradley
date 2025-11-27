@@ -3,7 +3,7 @@ package com.rust.exfil.takebradley.model.loot.gear;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public class WolfHeadGear extends GearItem {
-    WolfHeadGear(String description) {
+    WolfHeadGear() {
          this.name = "WolfHead Armor";
          this.description = description;
    }
