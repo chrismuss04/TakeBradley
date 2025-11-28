@@ -1,12 +1,15 @@
 package com.rust.exfil.takebradley.systems;
 
 import com.rust.exfil.takebradley.model.map.GameMap;
+import com.rust.exfil.takebradley.model.map.Wall;
 import com.rust.exfil.takebradley.model.map.ZoneFactory;
 import com.rust.exfil.takebradley.model.map.ZoneType;
 
 public class MapLoader {
     public static GameMap loadMap() {
         GameMap map = new GameMap();
+        
+        // === ZONES ===
         // extraction zone - where player can extract
         map.addZone(ZoneFactory.createZone(ZoneType.EXTRACT_ZONE, 0, 20, 10, 10));
         // bradley zone - where bradley apc spawns and roams
@@ -21,6 +24,19 @@ public class MapLoader {
         map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 0, 50, 40, 50));
         map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 40, 60, 40, 40));
         map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 80, 40, 20, 60));
+
+        // === WALLS ===
+        // Example loot room walls (you can customize these positions)
+        // Loot room 1 (40, 30, 10, 10) - walls with opening on south side
+        map.addWall(new Wall(40, 30, 10, 1));  // North wall
+        map.addWall(new Wall(40, 30, 1, 10));  // West wall
+        map.addWall(new Wall(49, 30, 1, 10));  // East wall
+        map.addWall(new Wall(40, 39, 3, 1));   // South wall - left part
+        map.addWall(new Wall(40, 39, 4, 1, true));  // South wall - opening (entrance)
+        map.addWall(new Wall(47, 39, 3, 1));   // South wall - right part
+
+        // You can add more walls for other loot rooms as needed
+        // This is just an example to show how walls are defined in the map
 
         return map;
     }
