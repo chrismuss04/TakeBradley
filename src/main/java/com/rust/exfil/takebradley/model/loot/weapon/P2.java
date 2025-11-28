@@ -1,7 +1,6 @@
 package com.rust.exfil.takebradley.model.loot.weapon;
 
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
-import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 public class P2 extends WeaponItem {
     P2() {

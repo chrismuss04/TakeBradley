@@ -1,6 +1,5 @@
 package com.rust.exfil.takebradley.model.loot;
 
-import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 public interface LootItem {
