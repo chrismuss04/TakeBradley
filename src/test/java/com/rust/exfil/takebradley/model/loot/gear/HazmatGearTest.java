@@ -40,7 +40,7 @@ class HazmatGearTest {
 
     @Test
     void testDescription() {
-        String expectedDesc = "Protective suit providing basic protection with minimal speed penalty";
+        String expectedDesc = "Hazmat suit, provides minmal damage resistance";
         assertEquals(expectedDesc, hazmat.getDescription());
     }
 

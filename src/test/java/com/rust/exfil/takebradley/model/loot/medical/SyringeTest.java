@@ -37,7 +37,7 @@ class SyringeTest {
 
     @Test
     void testName() {
-        assertEquals("Medical Syringe", syringe.getName());
+        assertEquals("Syringe", syringe.getName());
     }
 
     @Test
@@ -109,7 +109,7 @@ class SyringeTest {
 
         // Syringe heals 40, bandage heals 15
         assertTrue(player2.getHealth() > player1.getHealth());
-        assertEquals(65, player2.getHealth());
+        assertEquals(90, player2.getHealth());
         assertEquals(65, player1.getHealth());
     }
 }

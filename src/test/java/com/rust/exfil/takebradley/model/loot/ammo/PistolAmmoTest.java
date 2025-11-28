@@ -41,7 +41,7 @@ class PistolAmmoTest {
 
     @Test
     void testDescription() {
-        String expectedDesc = "Standard pistol-caliber ammunition for use in handguns and submachine guns";
+        String expectedDesc = "Standard pistol-caliber ammunition for use in handguns and submachine guns.";
         assertEquals(expectedDesc, pistolAmmo.getDescription());
     }
 

@@ -11,7 +11,7 @@ public class MovementSpeed implements Buff{
     MovementSpeed(double speedModifyPercent) {
         this.speedModifyPercent = speedModifyPercent;
         this.name = "Movement Speed Decrease";
-        this.description = "-" + (int)(speedModifyPercent * 100) + "% movement speed";
+        this.description = (int)(speedModifyPercent * 100) + "% movement speed";
     }
 
     @Override

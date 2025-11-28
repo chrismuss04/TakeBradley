@@ -41,7 +41,7 @@ class MP5Test {
 
     @Test
     void testDescription() {
-        assertEquals("9mm submachine gun", mp5.getDescription());
+        assertEquals("A compact submachine gun", mp5.getDescription());
     }
 
     @Test

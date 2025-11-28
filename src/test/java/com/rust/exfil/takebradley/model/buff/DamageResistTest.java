@@ -24,7 +24,7 @@ class DamageResistTest {
         DamageResist buff = new DamageResist(0.30);
 
         assertEquals("Damage Resistance", buff.getName());
-        assertEquals("+30% Damage Resistance", buff.getDescription());
+        assertEquals("+30% damage resistance", buff.getDescription());
     }
 
     @Test
@@ -79,7 +79,7 @@ class DamageResistTest {
     void testZeroResistancePercentage() {
         DamageResist buff = new DamageResist(0.0);
 
-        assertEquals("+0% Damage Resistance", buff.getDescription());
+        assertEquals("+0% damage resistance", buff.getDescription());
     }
 
     @Test

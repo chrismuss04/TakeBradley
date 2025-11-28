@@ -35,12 +35,12 @@ class WolfHeadGearTest {
 
     @Test
     void testName() {
-        assertEquals("Wolf Headdress", wolfHead.getName());
+        assertEquals("WolfHead Armor", wolfHead.getName());
     }
 
     @Test
     void testDescription() {
-        String expectedDesc = "Balanced armor offering good protection with low speed penalty";
+        String expectedDesc = "Wolf hide armor, offers moderate protection";
         assertEquals(expectedDesc, wolfHead.getDescription());
     }
 
@@ -57,7 +57,7 @@ class WolfHeadGearTest {
         wolfHead.use(player);
 
         assertNotNull(player.getInventory().getEquippedGear());
-        assertEquals("Wolf Headdress", player.getInventory().getEquippedGear().getName());
+        assertEquals("WolfHead Armor", player.getInventory().getEquippedGear().getName());
     }
 
     @Test

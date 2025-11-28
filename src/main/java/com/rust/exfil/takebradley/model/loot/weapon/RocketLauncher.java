@@ -5,7 +5,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 public class RocketLauncher extends WeaponItem{
     RocketLauncher() {
         this.name = "Rocket Launcher";
-        this.description = "A heavy weapon that fires explosive rockets.";
+        this.description = "A powerful explosive weapon";
         this.magazineSize = 1;
         this.damage = 100;
     }

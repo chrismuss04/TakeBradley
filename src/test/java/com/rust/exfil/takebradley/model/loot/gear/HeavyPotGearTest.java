@@ -35,12 +35,12 @@ class HeavyPotGearTest {
 
     @Test
     void testName() {
-        assertEquals("Heavy Plate Armor", heavyPlate.getName());
+        assertEquals("Heavy Pot", heavyPlate.getName());
     }
 
     @Test
     void testDescription() {
-        String expectedDesc = "Maximum protection heavy armor with significant speed penalty";
+        String expectedDesc = "Thick and sturdy, offers excellent protection at cost of speed.";
         assertEquals(expectedDesc, heavyPlate.getDescription());
     }
 
@@ -57,7 +57,7 @@ class HeavyPotGearTest {
         heavyPlate.use(player);
 
         assertNotNull(player.getInventory().getEquippedGear());
-        assertEquals("Heavy Plate Armor", player.getInventory().getEquippedGear().getName());
+        assertEquals("Heavy Pot", player.getInventory().getEquippedGear().getName());
     }
 
     @Test

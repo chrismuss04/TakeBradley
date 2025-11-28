@@ -11,7 +11,7 @@ class WeaponFactoryTest {
 
         assertNotNull(weapon);
         assertInstanceOf(AK.class, weapon);
-        assertEquals("AK-47", weapon.getName());
+        assertEquals("AK", weapon.getName());
         assertEquals(30, weapon.getMagazineSize());
         assertEquals(35, weapon.getDamage());
     }
@@ -33,7 +33,7 @@ class WeaponFactoryTest {
 
         assertNotNull(weapon);
         assertInstanceOf(P2.class, weapon);
-        assertEquals("P2 Pistol", weapon.getName());
+        assertEquals("P2", weapon.getName());
         assertEquals(10, weapon.getMagazineSize());
         assertEquals(15, weapon.getDamage());
     }

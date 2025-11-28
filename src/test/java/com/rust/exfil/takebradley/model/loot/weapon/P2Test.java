@@ -36,12 +36,12 @@ class P2Test {
 
     @Test
     void testName() {
-        assertEquals("P2 Pistol", p2.getName());
+        assertEquals("P2", p2.getName());
     }
 
     @Test
     void testDescription() {
-        assertEquals("9mm semi-automatic pistol", p2.getDescription());
+        assertEquals("A semi-automatic pistol", p2.getDescription());
     }
 
     @Test

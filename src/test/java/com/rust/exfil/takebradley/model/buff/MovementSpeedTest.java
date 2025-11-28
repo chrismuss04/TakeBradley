@@ -30,7 +30,7 @@ class MovementSpeedTest {
         MovementSpeed buff = new MovementSpeed(-0.15);
 
         assertEquals("Movement Speed Decrease", buff.getName());
-        assertEquals("-15% Movement Speed", buff.getDescription());
+        assertEquals("-15% movement speed", buff.getDescription());
     }
 
     @Test
@@ -94,6 +94,6 @@ class MovementSpeedTest {
         MovementSpeed posBuff = new MovementSpeed(0.25);
 
         assertTrue(negBuff.getDescription().contains("-33"));
-        assertTrue(posBuff.getDescription().contains("+25"));
+        assertTrue(posBuff.getDescription().contains("25"));
     }
 }

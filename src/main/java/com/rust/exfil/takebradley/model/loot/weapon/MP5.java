@@ -5,7 +5,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 public class MP5 extends WeaponItem{
     MP5() {
         this.name = "MP5";
-        this.description = "A compact submachine gun chambered in 9mm.";
+        this.description = "A compact submachine gun";
         this.magazineSize = 30;
         this.damage = 20;
     }

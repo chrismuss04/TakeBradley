@@ -41,7 +41,7 @@ class RocketAmmoTest {
 
     @Test
     void testDescription() {
-        String expectedDesc = "Ammunition for rocket launchers";
+        String expectedDesc = "Ammunition for rocket launchers.";
         assertEquals(expectedDesc, rocketAmmo.getDescription());
     }
 

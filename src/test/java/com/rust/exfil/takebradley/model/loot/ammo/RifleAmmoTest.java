@@ -41,7 +41,7 @@ class RifleAmmoTest {
 
     @Test
     void testDescription() {
-        String expectedDesc = "Rifle-caliber ammunition for use in rifles";
+        String expectedDesc = "Rifle-caliber ammunition for use in rifles.";
         assertEquals(expectedDesc, rifleAmmo.getDescription());
     }
 

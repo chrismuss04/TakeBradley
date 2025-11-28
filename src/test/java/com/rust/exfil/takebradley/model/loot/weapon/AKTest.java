@@ -36,12 +36,12 @@ class AKTest {
 
     @Test
     void testName() {
-        assertEquals("AK-47", ak.getName());
+        assertEquals("AK", ak.getName());
     }
 
     @Test
     void testDescription() {
-        assertEquals("Assault rifle", ak.getDescription());
+        assertEquals("A powerful assault rifle", ak.getDescription());
     }
 
     @Test

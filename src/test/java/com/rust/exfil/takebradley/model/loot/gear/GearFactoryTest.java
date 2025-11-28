@@ -31,7 +31,7 @@ class GearFactoryTest {
 
         assertNotNull(gear);
         assertInstanceOf(WolfHeadGear.class, gear);
-        assertEquals("Wolf Headdress", gear.getName());
+        assertEquals("WolfHead Armor", gear.getName());
         assertEquals(2, gear.getBuffs().size());
     }
 
@@ -41,7 +41,7 @@ class GearFactoryTest {
 
         assertNotNull(gear);
         assertInstanceOf(HeavyPotGear.class, gear);
-        assertEquals("Heavy Plate Armor", gear.getName());
+        assertEquals("Heavy Pot", gear.getName());
         assertEquals(2, gear.getBuffs().size());
     }
 

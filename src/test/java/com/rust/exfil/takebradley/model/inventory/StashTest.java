@@ -56,9 +56,9 @@ class StashTest {
         assertNotNull(stash.getItem(0));
         assertNotNull(stash.getItem(1));
         assertNotNull(stash.getItem(2));
-        assertEquals("AK-47", stash.getItem(0).getName());
+        assertEquals("AK", stash.getItem(0).getName());
         assertEquals("MP5", stash.getItem(1).getName());
-        assertEquals("P2 Pistol", stash.getItem(2).getName());
+        assertEquals("P2", stash.getItem(2).getName());
     }
 
     @Test
@@ -74,7 +74,7 @@ class StashTest {
         assertNotNull(stash.getItem(0));
         assertEquals("Rocket Launcher", stash.getItem(0).getName());
         assertNotNull(stash.getItem(1));
-        assertEquals("AK-47", stash.getItem(1).getName());
+        assertEquals("AK", stash.getItem(1).getName());
         assertNotNull(stash.getItem(2));
         assertEquals("MP5", stash.getItem(2).getName());
     }

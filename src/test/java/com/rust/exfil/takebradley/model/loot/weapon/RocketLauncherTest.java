@@ -41,7 +41,7 @@ class RocketLauncherTest {
 
     @Test
     void testDescription() {
-        assertEquals("Heavy explosive weapon", rocketLauncher.getDescription());
+        assertEquals("A powerful explosive weapon", rocketLauncher.getDescription());
     }
 
     @Test

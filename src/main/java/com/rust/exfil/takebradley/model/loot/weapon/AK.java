@@ -5,7 +5,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 public class AK extends WeaponItem{
     AK() {
         this.name = "AK";
-        this.description = "A powerful assault rifle.";
+        this.description = "A powerful assault rifle";
         this.magazineSize = 30;
         this.damage = 35;
     }

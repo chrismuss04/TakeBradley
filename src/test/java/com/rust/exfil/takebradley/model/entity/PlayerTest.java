@@ -187,7 +187,7 @@ class PlayerTest {
         LootItem equipped = player.getEquippedItem();
 
         assertNotNull(equipped);
-        assertEquals("AK-47", equipped.getName());
+        assertEquals("AK", equipped.getName());
     }
 
     @Test
@@ -205,7 +205,7 @@ class PlayerTest {
         // Stash should have items
         assertNotNull(player.getStash().getItem(0));
         assertNotNull(player.getStash().getItem(1));
-        assertEquals("AK-47", player.getStash().getItem(0).getName());
+        assertEquals("AK", player.getStash().getItem(0).getName());
         assertEquals("MP5", player.getStash().getItem(1).getName());
     }
 

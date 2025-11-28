@@ -20,7 +20,7 @@ class MedFactoryTest {
 
         assertNotNull(med);
         assertInstanceOf(Syringe.class, med);
-        assertEquals("Medical Syringe", med.getName());
+        assertEquals("Syringe", med.getName());
     }
 
     @Test

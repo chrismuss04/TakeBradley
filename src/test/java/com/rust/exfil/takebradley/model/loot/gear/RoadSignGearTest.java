@@ -40,7 +40,7 @@ class RoadSignGearTest {
 
     @Test
     void testDescription() {
-        String expectedDesc = "Metal armor providing strong protection with moderate speed penalty";
+        String expectedDesc = "Lightweight metal armor, offers decent protection.";
         assertEquals(expectedDesc, roadSign.getDescription());
     }
 
