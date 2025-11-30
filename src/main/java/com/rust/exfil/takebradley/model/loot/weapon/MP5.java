@@ -1,6 +1,6 @@
 package com.rust.exfil.takebradley.model.loot.weapon;
 
-import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 
 public class MP5 extends WeaponItem{
     MP5() {
@@ -8,16 +8,20 @@ public class MP5 extends WeaponItem{
         this.description = "A compact submachine gun";
         this.magazineSize = 30;
         this.damage = 20;
+        this.currentAmmo = 30;
+        this.projectileSpeed = 700.0;
     }
 
     @Override
-    public void reload() {
-        // Reload logic for MP5 - ensure pistol ammo is available
+    public AmmoType getAmmoType() {
+        return AmmoType.PISTOL;
     }
 
     @Override
-    public void use(Entity user) {
-        // shooting logic for MP5
-
+    public int reload(int availableAmmo) {
+        int needed = magazineSize - currentAmmo;
+        int toReload = Math.min(needed, availableAmmo);
+        currentAmmo += toReload;
+        return availableAmmo - toReload;
     }
 }

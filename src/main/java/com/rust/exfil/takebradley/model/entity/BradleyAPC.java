@@ -1,10 +1,12 @@
 package com.rust.exfil.takebradley.model.entity;
 
+import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
 import com.rust.exfil.takebradley.model.inventory.Inventory;
 import com.rust.exfil.takebradley.model.loot.LootItem;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 import java.util.UUID;
@@ -20,6 +22,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private Inventory inventory;
     private int selectedSlotIndex = 0;
     private double damageResistance = 0.0;
+    private Direction facingDirection = com.rust.exfil.takebradley.model.Direction.RIGHT;
 
     BradleyAPC(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -78,7 +81,23 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         if (!isAlive) return;
         LootItem item = inventory.getItem(0);
         if (item instanceof WeaponItem) {
-            ((WeaponItem) item).reload();
+            WeaponItem weapon = (WeaponItem) item;
+            
+            int ammoSlot = inventory.findAmmo(weapon.getAmmoType());
+            if (ammoSlot == -1) {
+                return;
+            }
+            
+            AmmoItem ammo = 
+                (AmmoItem) inventory.getItem(ammoSlot);
+            
+            int leftover = weapon.reload(ammo.getQuantity());
+            
+            if (leftover > 0) {
+                ammo.setQuantity(leftover);
+            } else {
+                inventory.removeItem(ammoSlot);
+            }
         }
     }
 
@@ -161,5 +180,15 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     @Override
     public void setSpeed(double speed) {
         this.speed=speed;
+    }
+
+    @Override
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    @Override
+    public void setFacingDirection(Direction direction) {
+        this.facingDirection = direction;
     }
 }

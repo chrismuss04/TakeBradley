@@ -3,6 +3,8 @@ package com.rust.exfil.takebradley.model.inventory;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 
 import java.util.ArrayList;
 import  java.util.List;
@@ -89,6 +91,19 @@ public class Inventory {
 
     boolean isValidIndex(int index) {
         return index >= 0 && index < capacity;
+    }
+
+    public int findAmmo(AmmoType ammoType) {
+        for (int i = 0; i < slots.size(); i++) {
+            LootItem item = slots.get(i).getItem();
+            if (item instanceof AmmoItem) {
+                com.rust.exfil.takebradley.model.loot.ammo.AmmoItem ammo = (AmmoItem) item;
+                if (ammo.getAmmoType() == ammoType) {
+                    return i; // Return slot index
+                }
+            }
+        }
+        return -1; // Not found
     }
 
 }

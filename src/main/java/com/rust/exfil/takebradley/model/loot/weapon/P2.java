@@ -1,6 +1,6 @@
 package com.rust.exfil.takebradley.model.loot.weapon;
 
-import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 
 public class P2 extends WeaponItem {
     P2() {
@@ -8,14 +8,20 @@ public class P2 extends WeaponItem {
         this.description = "A semi-automatic pistol";
         this.magazineSize = 10;
         this.damage = 15;
-    }
-    @Override
-    public void reload() {
-        // Reload logic for P2 pistol - ensure pistol ammo is available
+        this.currentAmmo = 10;
+        this.projectileSpeed = 600.0;
     }
 
     @Override
-    public void use(Entity user) {
-        // shooting logic for P2 pistol
+    public AmmoType getAmmoType() {
+        return AmmoType.PISTOL;
+    }
+
+    @Override
+    public int reload(int availableAmmo) {
+        int needed = magazineSize - currentAmmo;
+        int toReload = Math.min(needed, availableAmmo);
+        currentAmmo += toReload;
+        return availableAmmo - toReload;
     }
 }

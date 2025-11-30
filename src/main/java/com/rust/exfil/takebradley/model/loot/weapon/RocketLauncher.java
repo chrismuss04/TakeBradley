@@ -1,23 +1,27 @@
 package com.rust.exfil.takebradley.model.loot.weapon;
 
-import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 
 public class RocketLauncher extends WeaponItem{
-    RocketLauncher() {
+    public RocketLauncher() {
         this.name = "Rocket Launcher";
         this.description = "A powerful explosive weapon";
         this.magazineSize = 1;
         this.damage = 100;
+        this.currentAmmo = 1;
+        this.projectileSpeed = 400.0;
     }
 
     @Override
-    public void reload() {
-        // Reload logic for Rocket Launcher - ensure rocket ammo is available
+    public AmmoType getAmmoType() {
+        return AmmoType.ROCKET;
     }
 
     @Override
-    public void use(Entity user) {
-        // shooting logic for Rocket Launcher
-
+    public int reload(int availableAmmo) {
+        int needed = magazineSize - currentAmmo;
+        int toReload = Math.min(needed, availableAmmo);
+        currentAmmo += toReload;
+        return availableAmmo - toReload;
     }
 }

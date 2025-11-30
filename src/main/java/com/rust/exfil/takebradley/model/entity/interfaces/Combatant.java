@@ -1,5 +1,7 @@
 package com.rust.exfil.takebradley.model.entity.interfaces;
 
+import com.rust.exfil.takebradley.model.Direction;
+
 public interface Combatant {
     int getHealth();
     int getMaxHealth();
@@ -14,4 +16,7 @@ public interface Combatant {
 
     double getDamageResistance();
     void setDamageResistance(double resistance);
+    
+    Direction getFacingDirection();
+    void setFacingDirection(Direction direction);
 }

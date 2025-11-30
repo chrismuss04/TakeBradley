@@ -1,22 +1,27 @@
 package com.rust.exfil.takebradley.model.loot.weapon;
 
-import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 
 public class AK extends WeaponItem{
-    AK() {
+    public AK() {
         this.name = "AK";
         this.description = "A powerful assault rifle";
         this.magazineSize = 30;
         this.damage = 35;
+        this.currentAmmo = 30;
+        this.projectileSpeed = 800.0;
     }
 
     @Override
-    public void reload() {
-        // Reload logic for AK - ensure rifle ammo is available
+    public AmmoType getAmmoType() {
+        return AmmoType.RIFLE;
     }
 
     @Override
-    public void use(Entity user) {
-        // shooting logic for AK
+    public int reload(int availableAmmo) {
+        int needed = magazineSize - currentAmmo;
+        int toReload = Math.min(needed, availableAmmo);
+        currentAmmo += toReload;
+        return availableAmmo - toReload;
     }
 }

@@ -1,11 +1,13 @@
 package com.rust.exfil.takebradley.model.entity;
 
+import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
 import com.rust.exfil.takebradley.model.inventory.Inventory;
 import com.rust.exfil.takebradley.model.inventory.Stash;
 import com.rust.exfil.takebradley.model.loot.LootItem;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class Player implements Entity, Movable, Combatant {
     private Stash stash;
     private int selectedSlotIndex = 0;
     private double damageResistance = 0.0;
+    private Direction facingDirection = com.rust.exfil.takebradley.model.Direction.RIGHT;
 
     Player(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -84,7 +87,27 @@ public class Player implements Entity, Movable, Combatant {
         if (!isAlive) return;
         LootItem item = getEquippedItem();
         if (item instanceof WeaponItem) {
-            ((WeaponItem) item).reload();
+            WeaponItem weapon = (WeaponItem) item;
+            
+            // Find matching ammo in inventory
+            int ammoSlot = inventory.findAmmo(weapon.getAmmoType());
+            if (ammoSlot == -1) {
+                return; // No ammo available
+            }
+            
+            // Get the ammo item
+            AmmoItem ammo = 
+                (AmmoItem) inventory.getItem(ammoSlot);
+            
+            // Reload weapon and get leftover ammo
+            int leftover = weapon.reload(ammo.getQuantity());
+            
+            // Update or remove ammo from inventory
+            if (leftover > 0) {
+                ammo.setQuantity(leftover);
+            } else {
+                inventory.removeItem(ammoSlot); // All ammo consumed
+            }
         }
     }
 
@@ -154,6 +177,16 @@ public class Player implements Entity, Movable, Combatant {
     @Override
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    @Override
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    @Override
+    public void setFacingDirection(Direction direction) {
+        this.facingDirection = direction;
     }
 
     public Inventory getInventory() {
