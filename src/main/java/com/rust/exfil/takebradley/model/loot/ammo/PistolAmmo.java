@@ -6,6 +6,8 @@ public class PistolAmmo extends AmmoItem{
     PistolAmmo() {
         this.name = "Pistol Ammo";
         this.description = "Standard pistol-caliber ammunition for use in handguns and submachine guns.";
+        this.quantity = 30;
+        this.ammoType = AmmoType.PISTOL;
     }
 
     @Override

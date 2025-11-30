@@ -7,6 +7,7 @@ public class Syringe extends MedicalItem{
     Syringe() {
         this.name = "Syringe";
         this.description = "A medical syringe used to heal moderate damage";
+        this.quantity = 3;
     }
     @Override
     public void use(Entity user) {

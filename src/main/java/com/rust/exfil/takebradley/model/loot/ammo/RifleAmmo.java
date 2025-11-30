@@ -6,6 +6,8 @@ public class RifleAmmo extends AmmoItem{
     RifleAmmo() {
         this.name = "Rifle Ammo";
         this.description = "Rifle-caliber ammunition for use in rifles.";
+        this.quantity = 30;
+        this.ammoType = AmmoType.RIFLE;
     }
 
     @Override

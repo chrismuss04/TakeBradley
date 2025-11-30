@@ -5,6 +5,7 @@ import com.rust.exfil.takebradley.model.loot.LootItem;
 public abstract class MedicalItem implements LootItem {
     String name;
     String description;
+    int quantity;
 
     @Override
     public String getName() {

@@ -7,6 +7,7 @@ public class Bandage extends MedicalItem{
     Bandage() {
         this.name = "Bandage";
         this.description = "A simple bandage used to heal minor damage";
+        this.quantity = 3;
     }
     @Override
     public void use(Entity user) {
