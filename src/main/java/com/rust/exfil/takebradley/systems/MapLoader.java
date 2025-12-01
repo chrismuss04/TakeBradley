@@ -35,8 +35,11 @@ public class MapLoader {
         map.addWall(new Wall(40, 39, 4, 1, true));  // South wall - opening (entrance)
         map.addWall(new Wall(47, 39, 3, 1));   // South wall - right part
 
-        // You can add more walls for other loot rooms as needed
-        // This is just an example to show how walls are defined in the map
+        // perimeter walls:
+        map.addWall(new Wall(0, 0, 100, 1));
+        map.addWall(new Wall(0, 0, 1, 100));
+        map.addWall(new Wall(99, 0, 1, 100));
+        map.addWall(new Wall(0, 99, 100, 1));
 
         return map;
     }
