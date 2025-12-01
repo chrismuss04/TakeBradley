@@ -9,6 +9,7 @@ public class HazmatGear extends GearItem {
     HazmatGear() {
         this.name = "Hazmat Suit";
         this.description = "Hazmat suit, provides minmal damage resistance";
+        this.gearType = GearType.HAZMAT;
         addBuff(BuffFactory.create(DAMAGE_RESIST, 0.20));
         addBuff(BuffFactory.create(MOVEMENT_SPEED, -0.10));
     }

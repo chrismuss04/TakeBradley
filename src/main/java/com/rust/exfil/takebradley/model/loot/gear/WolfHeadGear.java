@@ -8,6 +8,7 @@ public class WolfHeadGear extends GearItem {
     WolfHeadGear() {
          this.name = "WolfHead Armor";
          this.description = "Wolf hide armor, offers moderate protection";
+         this.gearType = GearType.WOLFHEAD;
          addBuff(BuffFactory.create(DAMAGE_RESIST, 0.40));
             addBuff(BuffFactory.create(MOVEMENT_SPEED, -0.05));
    }

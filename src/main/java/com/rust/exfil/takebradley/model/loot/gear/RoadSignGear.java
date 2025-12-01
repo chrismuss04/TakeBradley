@@ -8,6 +8,7 @@ public class RoadSignGear extends GearItem {
     RoadSignGear() {
         this.name = "Road Sign Armor";
         this.description = "Lightweight metal armor, offers decent protection.";
+        this.gearType = GearType.ROADSIGN;
         addBuff(BuffFactory.create(DAMAGE_RESIST, 0.50));
         addBuff(BuffFactory.create(MOVEMENT_SPEED, -0.15));
     }

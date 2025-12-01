@@ -10,10 +10,15 @@ import java.util.List;
 public abstract class GearItem implements LootItem {
     String name;
     String description;
+    GearType gearType;
     List<Buff> buffs = new ArrayList<>();
 
     void addBuff(Buff buff) {
         buffs.add(buff);
+    }
+    
+    public GearType getGearType() {
+        return gearType;
     }
 
     public void applyBuffs(Entity user) {

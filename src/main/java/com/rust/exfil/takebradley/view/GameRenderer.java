@@ -9,11 +9,27 @@ import javafx.scene.canvas.GraphicsContext;
 public class GameRenderer {
     private Canvas canvas;
     private GraphicsContext gc;
+    private Camera camera;
+    private SpriteManager spriteManager;
+    private BackgroundRenderer backgroundRenderer;
+    private WallRenderer wallRenderer;
     
     
     public void initialize(Canvas canvas) {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
+        
+        // Initialize camera with viewport and map dimensions
+        // Map size is 1000x1000 (from GameInitializer)
+        this.camera = new Camera(canvas.getWidth(), canvas.getHeight(), 1000, 1000);
+        
+        // Initialize sprite manager and load sprites
+        this.spriteManager = new SpriteManager();
+        this.spriteManager.loadSprites();
+        
+        // Initialize renderers
+        this.backgroundRenderer = new BackgroundRenderer();
+        this.wallRenderer = new WallRenderer();
     }
     
     // render game state, called by controller
@@ -25,14 +41,29 @@ public class GameRenderer {
         // clear canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         
-        // TODO: Implement rendering layers
-        // 1. Background
-        // 2. Zones
-        // 3. Extraction zones
-        // 4. Walls
-        // 5. Entities
-        // 6. Projectiles
-        // 7. HUD
+        // Update camera to follow player
+        camera.centerOn(player.getX(), player.getY());
+        
+        // Apply camera transformation for world rendering
+        gc.save();
+        gc.translate(-camera.getCameraX(), -camera.getCameraY());
+        
+        // Render world layers
+        backgroundRenderer.renderBackground(gc, world.getMap());
+        backgroundRenderer.renderZones(gc, world.getMap());
+        wallRenderer.renderWalls(gc, world.getMap().getWalls());
+        
+        // TODO: Render entities
+        // TODO: Render projectiles
+        
+        // Remove camera transformation
+        gc.restore();
+        
+        // TODO: Render HUD (fixed screen position)
+    }
+    
+    public Camera getCamera() {
+        return camera;
     }
     
     public Canvas getCanvas() {
