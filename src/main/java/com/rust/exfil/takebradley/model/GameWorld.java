@@ -1,27 +1,159 @@
 package com.rust.exfil.takebradley.model;
 
+import com.rust.exfil.takebradley.model.entity.Projectile;
+import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
+import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
+import com.rust.exfil.takebradley.model.map.ExtractionZone;
 import com.rust.exfil.takebradley.model.map.GameMap;
 import com.rust.exfil.takebradley.model.map.Wall;
+import com.rust.exfil.takebradley.model.map.Zone;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GameWorld {
     private final GameMap map;
+    private final List<Entity> entities;
+    private final List<Combatant> combatants;
+    private final List<Projectile> projectiles;
+    private final List<Entity> containers;
 
     public GameWorld(GameMap map) {
         this.map = map;
+        this.entities = new ArrayList<>();
+        this.combatants = new ArrayList<>();
+        this.projectiles = new ArrayList<>();
+        this.containers = new ArrayList<>();
     }
 
     public GameMap getMap() {
         return map;
     }
 
-    // return true if the (x,y) coords intersect with any wall
+   // add an entity to the game world
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+        
+        // categorize entities
+        if (entity instanceof Projectile) {
+            projectiles.add((Projectile) entity);
+        }
+        if (entity instanceof Combatant) {
+            combatants.add((Combatant) entity);
+        }
+        //  loot containers are entities that are not combatants or projectiles
+        if (!(entity instanceof Combatant) && !(entity instanceof Projectile)) {
+            containers.add(entity);
+        }
+    }
+
+    // remove entity by id
+    public void removeEntity(UUID id) {
+        Entity toRemove = null;
+        for (Entity entity : entities) {
+            if (entity.getId().equals(id)) {
+                toRemove = entity;
+                break;
+            }
+        }
+        
+        if (toRemove != null) {
+            entities.remove(toRemove);
+            
+            if (toRemove instanceof Projectile) {
+                projectiles.remove((Projectile) toRemove);
+            }
+            if (toRemove instanceof Combatant) {
+                combatants.remove((Combatant) toRemove);
+            }
+            if (!(toRemove instanceof Combatant) && !(toRemove instanceof Projectile)) {
+                containers.remove(toRemove);
+            }
+        }
+    }
+
+    // get all entities in the game world
+    public List<Entity> getEntities() {
+        return new ArrayList<>(entities);
+    }
+
+    // update entities and handle collisions
+    public void updateAll(double deltaTime) {
+        // update all entities
+        for (Entity entity : entities) {
+            if (!entity.isAlive()) continue;
+            
+            // store old position
+            double oldX = entity.getX();
+            double oldY = entity.getY();
+            
+            // update entity to move it
+            entity.update(deltaTime);
+            
+            // check wall collisions for movable entities (except projectiles)
+            if (entity instanceof Movable && !(entity instanceof Projectile)) {
+                if (checkWallCollision(entity.getX(), entity.getY())) {
+                    // revert position if collision detected
+                    ((Movable) entity).setPosition(oldX, oldY);
+                }
+            }
+        }
+        
+        // check projectile collisions
+        checkProjectileCollisions();
+        
+        // remove 'dead' projectiles
+        projectiles.removeIf(p -> !p.isAlive());
+        entities.removeIf(e -> e instanceof Projectile && !e.isAlive());
+    }
+
+    // check projectile collisions
+    private void checkProjectileCollisions() {
+        for (Projectile projectile : projectiles) {
+            if (!projectile.isAlive()) continue;
+            
+            // check wall collision
+            if (checkWallCollision(projectile.getX(), projectile.getY())) {
+                projectile.hitWall();
+                continue;
+            }
+            
+            // check entity collision
+            for (Entity entity : entities) {
+                if (entity == projectile) continue;
+                if (entity == projectile.getOwner()) continue; // No friendly fire
+                if (!entity.isAlive()) continue;
+                
+                if (projectile.isCollidingWith(entity)) {
+                    projectile.hit(entity);
+                    break; // Projectile is destroyed, stop checking
+                }
+            }
+        }
+    }
+
+    // check if coordinates intersect with a wall (for movement/projectile movement)
     public boolean checkWallCollision(double x, double y) {
         List<Wall> walls = map.getWalls();
         for (Wall wall : walls) {
             if (wall.intersects(x, y)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    // check if an entity is in extraction zone -> for extract logic
+    public boolean isInExtractionZone(Entity entity) {
+        double x = entity.getX();
+        double y = entity.getY();
+        for (Zone zone : map.getZones()) {
+            if (zone instanceof ExtractionZone) {
+                if (zone.contains(x, y)) {
+                    return true;
+                }
             }
         }
         return false;
