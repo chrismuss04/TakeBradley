@@ -62,6 +62,6 @@ class P2Test {
 
     @Test
     void testReloadMethod() {
-        assertDoesNotThrow(() -> p2.reload());
+        assertDoesNotThrow(() -> p2.reload(1));
     }
 }

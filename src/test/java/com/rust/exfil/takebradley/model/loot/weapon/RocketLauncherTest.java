@@ -62,7 +62,7 @@ class RocketLauncherTest {
 
     @Test
     void testReloadMethod() {
-        assertDoesNotThrow(() -> rocketLauncher.reload());
+        assertDoesNotThrow(() -> rocketLauncher.reload(1));
     }
 
     @Test

@@ -62,6 +62,6 @@ class AKTest {
 
     @Test
     void testReloadMethod() {
-        assertDoesNotThrow(() -> ak.reload());
+        assertDoesNotThrow(() -> ak.reload(1));
     }
 }

@@ -62,6 +62,6 @@ class MP5Test {
 
     @Test
     void testReloadMethod() {
-        assertDoesNotThrow(() -> mp5.reload());
+        assertDoesNotThrow(() -> mp5.reload(1));
     }
 }
