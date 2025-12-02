@@ -24,8 +24,8 @@ public class GameRenderer {
         this.gc = canvas.getGraphicsContext2D();
         
         // Initialize camera with viewport and map dimensions
-        // Map size is 1000x1000 (from GameInitializer)
-        this.camera = new Camera(canvas.getWidth(), canvas.getHeight(), 1000, 1000);
+        // Map size is 1500x1500
+        this.camera = new Camera(canvas.getWidth(), canvas.getHeight(), 1500, 1500);
         
         // Initialize sprite manager and load sprites
         this.spriteManager = new SpriteManager();

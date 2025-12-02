@@ -18,7 +18,7 @@ public class BackgroundRenderer {
     public void renderBackground(GraphicsContext gc, GameMap map) {
         // Main background - dark gray concrete
         gc.setFill(BACKGROUND_COLOR);
-        gc.fillRect(0, 0, 1000, 1000);
+        gc.fillRect(0, 0, 1500, 1500);
     }
     
     // render different zones different colors
