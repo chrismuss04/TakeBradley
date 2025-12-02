@@ -108,14 +108,37 @@ public class Inventory {
 
     // equip first available gear - for npc/scientist spawn
     public void equipGear() {
-        for (InventorySlot slot : slots) {
-            LootItem item = slot.getItem();
+        for (int i = 0; i < slots.size(); i++) {
+            LootItem item = slots.get(i).getItem();
             if (item instanceof GearItem) {
+                // Remove from inventory before equipping to avoid duplication
+                removeItem(i);
                 setEquippedGear((GearItem) item);     
                 return;
             }
-            
         }
+    }
+    
+    /**
+     * Equip gear from a specific inventory slot
+     * Removes the gear from the slot before equipping to avoid duplication
+     * @param slotIndex The inventory slot containing the gear
+     * @return true if gear was equipped, false if slot is empty or doesn't contain gear
+     */
+    public boolean equipGearFromSlot(int slotIndex) {
+        if (!isValidIndex(slotIndex)) {
+            return false;
+        }
+        
+        LootItem item = slots.get(slotIndex).getItem();
+        if (item instanceof GearItem) {
+            // Remove from inventory before equipping to avoid duplication
+            removeItem(slotIndex);
+            setEquippedGear((GearItem) item);
+            return true;
+        }
+        
+        return false;
     }
 
 }

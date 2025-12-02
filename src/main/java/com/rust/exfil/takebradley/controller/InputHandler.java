@@ -1,7 +1,13 @@
 package com.rust.exfil.takebradley.controller;
 
 import com.rust.exfil.takebradley.model.Direction;
+import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.Player;
+import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.loot.LootItem;
+import com.rust.exfil.takebradley.model.loot.gear.GearItem;
+import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -10,10 +16,12 @@ import java.util.Set;
 
 public class InputHandler {
     private final Player player;
+    private final GameWorld gameWorld;
     private final Set<KeyCode> pressedKeys;
     
-    public InputHandler(Player player) {
+    public InputHandler(Player player, GameWorld gameWorld) {
         this.player = player;
+        this.gameWorld = gameWorld;
         this.pressedKeys = new HashSet<>();
     }
     
@@ -38,22 +46,56 @@ public class InputHandler {
             player.equipItem(3);
         } else if (code == KeyCode.DIGIT5) {
             player.equipItem(4);
+        } else if (code == KeyCode.DIGIT6) {
+            player.equipItem(5);
+        } else if (code == KeyCode.DIGIT7) {
+            player.equipItem(6);
+        } else if (code == KeyCode.DIGIT8) {
+            player.equipItem(7);
+        } else if (code == KeyCode.DIGIT9) {
+            player.equipItem(8);
+        } else if (code == KeyCode.DIGIT0) {
+            player.equipItem(9);
         }
+
         
         // Combat - Space to shoot
         else if (code == KeyCode.SPACE) {
-            player.fireWeapon();
+            if(player.getEquippedItem() instanceof WeaponItem) {
+                player.fireWeapon();
+            }
         }
         
         // Reload - R
         else if (code == KeyCode.R) {
-            player.reload();
+            if(player.getEquippedItem() instanceof WeaponItem) {
+                player.reload();
+            }
         }
         
-        // Use item - E (for medical items)
+        // Use item - E (for medical items and gear)
         else if (code == KeyCode.E) {
-            if (player.getEquippedItem() != null) {
-                player.getEquippedItem().use(player);
+            LootItem equippedItem = player.getEquippedItem();
+            if (equippedItem != null) {
+                // Special handling for gear to avoid duplication bug
+                if (equippedItem instanceof GearItem) {
+                    player.getInventory().equipGearFromSlot(player.getSelectedSlotIndex());
+                } else {
+                    // For other items (medical, etc.), use normally
+                    equippedItem.use(player);
+                }
+            }
+        }
+        
+        // loot container - F
+        else if (code == KeyCode.F) {
+            // find nearest container within interaction range (50 pixels)
+            Entity nearestContainer = 
+                gameWorld.findNearestContainer(player, 50.0);
+            
+            if (nearestContainer != null) {
+                // loot all items from container
+                gameWorld.lootContainer(player, nearestContainer);
             }
         }
     }

@@ -15,6 +15,8 @@ public class WolfHeadGear extends GearItem {
 
     @Override
     public void use(Entity user) {
-       user.getInventory().setEquippedGear(this);
+        // Note: Gear equipping is handled by Inventory.equipGearFromSlot() to avoid duplication
+        // This method should not be called directly
+        user.getInventory().setEquippedGear(this);
     }
 }

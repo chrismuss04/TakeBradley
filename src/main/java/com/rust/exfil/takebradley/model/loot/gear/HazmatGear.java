@@ -15,7 +15,8 @@ public class HazmatGear extends GearItem {
     }
     @Override
     public void use(Entity user) {
-        //apply effects -> -5% speed, +30% damage resist
+        // Note: Gear equipping is handled by Inventory.equipGearFromSlot() to avoid duplication
+        // This method should not be called directly
         user.getInventory().setEquippedGear(this);
     }
 }

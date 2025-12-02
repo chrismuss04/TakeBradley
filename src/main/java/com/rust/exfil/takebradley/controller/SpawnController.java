@@ -8,6 +8,8 @@ import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 import com.rust.exfil.takebradley.model.loot.gear.GearFactory;
 import com.rust.exfil.takebradley.model.loot.gear.GearType;
+import com.rust.exfil.takebradley.model.loot.medical.MedFactory;
+import com.rust.exfil.takebradley.model.loot.medical.MedType;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponFactory;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponType;
@@ -141,7 +143,40 @@ public class SpawnController {
     public LootCrate spawnLootCrate(String name, double x, double y) {
         LootCrate crate = (LootCrate) EntityFactory.createEntity(EntityType.LOOT_CRATE, name, x, y);
         
-        // handle loot population later
+        int itemCount = 2 + random.nextInt(3); // 2, 3, or 4 items
+        
+        for (int i = 0; i < itemCount; i++) {
+            int itemType = random.nextInt(4); // 0=weapon, 1=ammo, 2=medical, 3=gear
+            
+            switch (itemType) {
+                case 0: // Weapon
+                    WeaponType[] weapons = {WeaponType.P2, WeaponType.MP5};
+                    crate.getInventory().addItem(
+                        WeaponFactory.create(weapons[random.nextInt(weapons.length)])
+                    );
+                    break;
+                    
+                case 1: // Ammo
+                    AmmoType[] ammoTypes = {AmmoType.PISTOL, AmmoType.RIFLE};
+                    AmmoItem ammo = AmmoFactory.create(ammoTypes[random.nextInt(ammoTypes.length)]);
+                    ammo.setQuantity(30 + random.nextInt(31)); // 30-60 rounds
+                    crate.getInventory().addItem(ammo);
+                    break;
+                    
+                case 2: // Medical
+                    MedType[] medTypes = {
+                        MedType.BANDAGE,
+                        MedType.SYRINGE
+                    };
+                    crate.getInventory().addItem(MedFactory.create(medTypes[random.nextInt(medTypes.length)]));
+                    break;
+                    
+                case 3: // Gear
+                    GearType[] gearTypes = {GearType.HAZMAT, GearType.WOLFHEAD};
+                    crate.getInventory().addItem(GearFactory.create(gearTypes[random.nextInt(gearTypes.length)]));
+                    break;
+            }
+        }
         
         gameWorld.addEntity(crate);
         return crate;
@@ -151,7 +186,34 @@ public class SpawnController {
     public EliteCrate spawnEliteCrate(String name, double x, double y) {
         EliteCrate eliteCrate = (EliteCrate) EntityFactory.createEntity(EntityType.ELITE_CRATE, name, x, y);
         
-        // handle loot population later
+        int itemCount = 3 + random.nextInt(3); // 3, 4, or 5 items
+        
+        for (int i = 0; i < itemCount; i++) {
+            int itemType = random.nextInt(4); // 0=weapon, 1=ammo, 2=medical, 3=gear
+            
+            switch (itemType) {
+                case 0: // High-tier weapons
+                    WeaponType[] weapons = {WeaponType.AK, WeaponType.ROCKET_LAUNCHER};
+                    eliteCrate.getInventory().addItem(WeaponFactory.create(weapons[random.nextInt(weapons.length)]));
+                    break;
+                    
+                case 1: // Large ammo stacks
+                    AmmoType[] ammoTypes = {AmmoType.RIFLE, AmmoType.ROCKET};
+                    AmmoItem ammo = AmmoFactory.create(ammoTypes[random.nextInt(ammoTypes.length)]);
+                    ammo.setQuantity(60 + random.nextInt(61)); // 60-120 rounds
+                    eliteCrate.getInventory().addItem(ammo);
+                    break;
+                    
+                case 2: // Medical (syringes preferred)
+                    eliteCrate.getInventory().addItem(MedFactory.create(MedType.SYRINGE));
+                    break;
+                    
+                case 3: // High-tier gear
+                    GearType[] gearTypes = {GearType.HEAVYPOT, GearType.ROADSIGN};
+                    eliteCrate.getInventory().addItem(GearFactory.create(gearTypes[random.nextInt(gearTypes.length)]));
+                    break;
+            }
+        }
         
         gameWorld.addEntity(eliteCrate);
         return eliteCrate;

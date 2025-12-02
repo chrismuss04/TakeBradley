@@ -11,6 +11,7 @@ public class EliteCrate implements Entity {
     private final double x, y;
     private boolean isAlive;
     private Inventory inventory;
+    private boolean isLooted;
 
     EliteCrate(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -19,6 +20,7 @@ public class EliteCrate implements Entity {
         this.y = y;
         this.isAlive = true;  // Crates start alive
         this.inventory = new Inventory(10, this);
+        this.isLooted = false;
     }
 
     @Override
@@ -57,5 +59,13 @@ public class EliteCrate implements Entity {
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+    
+    public boolean isLooted() {
+        return isLooted;
+    }
+    
+    public void setLooted(boolean looted) {
+        this.isLooted = looted;
     }
 }

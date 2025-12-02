@@ -2,11 +2,15 @@ package com.rust.exfil.takebradley.model;
 
 import com.rust.exfil.takebradley.controller.EventPublisher;
 import com.rust.exfil.takebradley.model.entity.BradleyAPC;
+import com.rust.exfil.takebradley.model.entity.EliteCrate;
+import com.rust.exfil.takebradley.model.entity.LootCrate;
 import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.Projectile;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
+import com.rust.exfil.takebradley.model.inventory.Inventory;
+import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.map.ExtractionZone;
 import com.rust.exfil.takebradley.model.map.GameMap;
 import com.rust.exfil.takebradley.model.map.Wall;
@@ -209,5 +213,123 @@ public class GameWorld {
             }
         }
         return false;
+    }
+    
+    // loot an item from a loot container (or npc death)
+    public boolean lootItem(Player player, Entity container, int slotIndex) {
+        // check if container has inventory
+        Inventory containerInventory = container.getInventory();
+        if (containerInventory == null) {
+            return false;
+        }
+        
+        // get item from container slot
+        LootItem item = containerInventory.getItem(slotIndex);
+        if (item == null) {
+            return false;
+        }
+        
+        // try to add to player inventory
+        if (player.getInventory().addItem(item)) {
+            // remove from container
+            containerInventory.removeItem(slotIndex);
+            
+            // check if container is now empty and mark as looted if so
+            checkAndMarkLooted(container);
+            
+            return true;
+        }
+        
+        return false; // player inventory full
+    }
+    
+    // loot all items from a loot container
+    public boolean lootContainer(Player player, Entity container) {
+        // check if container has inventory
+        Inventory containerInventory = container.getInventory();
+        if (containerInventory == null) {
+            return false;
+        }
+        
+        boolean allTransferred = true;
+        
+        // try to transfer all items
+        for (int i = 0; i < containerInventory.getSize(); i++) {
+            LootItem item = containerInventory.getItem(i);
+            if (item != null) {
+                if (player.getInventory().addItem(item)) {
+                    containerInventory.removeItem(i);
+                } else {
+                    allTransferred = false;
+                    break; // player inventory full, stop transfer
+                }
+            }
+        }
+        
+        // check if container is now empty and mark as looted if so
+        checkAndMarkLooted(container);
+        
+        return allTransferred;
+    }
+    
+    
+    private void checkAndMarkLooted(Entity container) {
+        Inventory containerInventory = container.getInventory();
+        if (containerInventory == null) {
+            return;
+        }
+        
+        // check if all slots are empty
+        boolean isEmpty = true;
+        for (int i = 0; i < containerInventory.getSize(); i++) {
+            if (containerInventory.getItem(i) != null) {
+                isEmpty = false;
+                break;
+            }
+        }
+        
+        // mark as looted if empty
+        if (isEmpty) {
+            if (container instanceof LootCrate) {
+                ((LootCrate) container).setLooted(true);
+            } else if (container instanceof EliteCrate) {
+                ((EliteCrate) container).setLooted(true);
+            }
+        }
+    }
+    
+    /**
+     * Find the nearest loot container within interaction range
+     * @param player The player
+     * @param maxDistance Maximum interaction distance
+     * @return The nearest container, or null if none in range
+     */
+    public Entity findNearestContainer(Player player, double maxDistance) {
+        Entity nearest = null;
+        double nearestDistance = maxDistance;
+        
+        for (Entity entity : containers) {
+            // Skip if already looted
+            if (entity instanceof com.rust.exfil.takebradley.model.entity.LootCrate) {
+                if (((com.rust.exfil.takebradley.model.entity.LootCrate) entity).isLooted()) {
+                    continue;
+                }
+            } else if (entity instanceof com.rust.exfil.takebradley.model.entity.EliteCrate) {
+                if (((com.rust.exfil.takebradley.model.entity.EliteCrate) entity).isLooted()) {
+                    continue;
+                }
+            }
+            
+            double dx = entity.getX() - player.getX();
+            double dy = entity.getY() - player.getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < nearestDistance) {
+                nearest = entity;
+                nearestDistance = distance;
+            }
+        }
+        
+        return nearest;
     }
 }
