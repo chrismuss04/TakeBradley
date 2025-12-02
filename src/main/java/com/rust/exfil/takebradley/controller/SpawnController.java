@@ -45,12 +45,12 @@ public class SpawnController {
         }
         else {
             // Give player starting loadout: AK with ammo
-        WeaponItem ak = WeaponFactory.create(WeaponType.AK);
-        AmmoItem rifleAmmo = AmmoFactory.create(AmmoType.RIFLE);
-        rifleAmmo.setQuantity(120); // 4 magazines worth
+        WeaponItem weapon = WeaponFactory.create(WeaponType.AK);
+        AmmoItem ammo1 = AmmoFactory.create(AmmoType.RIFLE);
+        ammo1.setQuantity(150);
         
-        player.getInventory().addItem(ak);
-        player.getInventory().addItem(rifleAmmo);
+        player.getInventory().addItem(weapon);
+        player.getInventory().addItem(ammo1);
         }
         
         gameWorld.addEntity(player);
@@ -63,15 +63,28 @@ public class SpawnController {
         NpcPlayer npc = (NpcPlayer) EntityFactory.createEntity(EntityType.NPC, name, x, y);
         
         // randomize ammo type: pistol or rifle
-        AmmoType ammo = random.nextBoolean() ? AmmoType.RIFLE : AmmoType.PISTOL;
-        npc.getInventory().addItem(AmmoFactory.create(ammo));
-        // match ammo type :
-        if(ammo == AmmoType.RIFLE) {
+        AmmoType ammoType = random.nextBoolean() ? AmmoType.RIFLE : AmmoType.PISTOL;
+        
+        // match ammo type and give 2 separate magazine stacks
+        if(ammoType == AmmoType.RIFLE) {
             npc.getInventory().addItem(WeaponFactory.create(WeaponType.AK));
+            // add 2 separate stacks of 30 rounds each
+            npc.getInventory().addItem(AmmoFactory.create(AmmoType.RIFLE));
+            npc.getInventory().addItem(AmmoFactory.create(AmmoType.RIFLE));
         }
         else {
-            WeaponType weapon = random.nextBoolean() ? WeaponType.MP5 : WeaponType.P2;
-            npc.getInventory().addItem(WeaponFactory.create(weapon));
+            WeaponType weaponType = random.nextBoolean() ? WeaponType.MP5 : WeaponType.P2;
+            npc.getInventory().addItem(WeaponFactory.create(weaponType));
+            
+            if (weaponType == WeaponType.MP5) {
+                // add 2 separate stacks of 30 rounds each
+                npc.getInventory().addItem(AmmoFactory.create(AmmoType.PISTOL));
+            } else {
+                // P2 uses 10 round mags so add 2 separate stacks
+                AmmoItem ammo1 = AmmoFactory.create(AmmoType.PISTOL);
+                ammo1.setQuantity(20);
+                npc.getInventory().addItem(ammo1);
+            }
         }
         
         // randomize gear type: Road Sign or Wolf Head
@@ -87,13 +100,24 @@ public class SpawnController {
     public Scientist spawnScientist(String name, double x, double y) {
         Scientist scientist = (Scientist) EntityFactory.createEntity(EntityType.SCIENTIST, name, x, y);
         
-        // Randomize weapon: P2 or MP5
-        WeaponType weapon = random.nextBoolean() ? WeaponType.P2 : WeaponType.MP5;
+        // randomize weapon: P2 or MP5
+        WeaponType weaponType = random.nextBoolean() ? WeaponType.P2 : WeaponType.MP5;
         
-        scientist.getInventory().addItem(WeaponFactory.create(weapon));
-        scientist.getInventory().addItem(AmmoFactory.create(AmmoType.PISTOL));
+        scientist.getInventory().addItem(WeaponFactory.create(weaponType));
+        
+        // give 2 separate magazine stacks
+        if (weaponType == WeaponType.MP5) {
+            // add 2 separate stacks of 30 rounds each
+            scientist.getInventory().addItem(AmmoFactory.create(AmmoType.PISTOL)); // Stack 1: 30 rounds
+            scientist.getInventory().addItem(AmmoFactory.create(AmmoType.PISTOL)); // Stack 2: 30 rounds
+        } else {
+            // P2 uses 10 round mags - add 2 separate stacks
+            AmmoItem ammo1 = AmmoFactory.create(AmmoType.PISTOL);
+            ammo1.setQuantity(20);
+            scientist.getInventory().addItem(ammo1);
+        }
+        
         scientist.getInventory().addItem(GearFactory.create(GearType.HAZMAT));
-        
         scientist.getInventory().equipGear();
         
         gameWorld.addEntity(scientist);

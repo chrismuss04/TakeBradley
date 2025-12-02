@@ -10,6 +10,7 @@ public class RocketLauncher extends WeaponItem{
         this.damage = 100;
         this.currentAmmo = 1;
         this.projectileSpeed = 400.0;
+        this.reloadDuration = 3000; // 3 seconds to reload
     }
 
     @Override
@@ -19,9 +20,6 @@ public class RocketLauncher extends WeaponItem{
 
     @Override
     public int reload(int availableAmmo) {
-        int needed = magazineSize - currentAmmo;
-        int toReload = Math.min(needed, availableAmmo);
-        currentAmmo += toReload;
-        return availableAmmo - toReload;
+        return startReload(availableAmmo);
     }
 }

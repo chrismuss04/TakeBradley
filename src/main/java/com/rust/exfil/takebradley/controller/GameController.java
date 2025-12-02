@@ -1,6 +1,10 @@
 package com.rust.exfil.takebradley.controller;
 
+
 import com.rust.exfil.takebradley.model.GameWorld;
+import com.rust.exfil.takebradley.model.entity.BradleyAPC;
+import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.systems.event.EntityDeathEvent;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
 import com.rust.exfil.takebradley.systems.event.GameEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
@@ -25,6 +29,7 @@ public class GameController implements EventObserver {
         // subscribe to events
         EventPublisher.getInstance().subscribe(ProjectileCreatedEvent.class, this);
         EventPublisher.getInstance().subscribe(com.rust.exfil.takebradley.systems.event.ProjectileHitEvent.class, this);
+        EventPublisher.getInstance().subscribe(com.rust.exfil.takebradley.systems.event.EntityDeathEvent.class, this);
     }
     
     // Set the game renderer (called from Main after initialization)
@@ -87,7 +92,22 @@ public class GameController implements EventObserver {
             ProjectileCreatedEvent projectileEvent = (ProjectileCreatedEvent) event;
             gameWorld.addEntity(projectileEvent.getProjectile());
         } else if (event instanceof ProjectileHitEvent) {
-                gameRenderer.getAudioManager().playHitSound();               
+            gameRenderer.getAudioManager().playHitSound();               
+        } else if (event instanceof EntityDeathEvent) {
+            EntityDeathEvent deathEvent = 
+                (com.rust.exfil.takebradley.systems.event.EntityDeathEvent) event;
+            
+            // if Bradley died, spawn 3 elite crates at its position
+            if (deathEvent.getEntity() instanceof BradleyAPC) {
+                Entity bradley = deathEvent.getEntity();
+                double x = bradley.getX();
+                double y = bradley.getY();
+                
+                // spawn 3 elite crates in a small area around Bradley
+                spawnController.spawnEliteCrate("Bradley Loot 1", x - 30, y);
+                spawnController.spawnEliteCrate("Bradley Loot 2", x + 30, y);
+                spawnController.spawnEliteCrate("Bradley Loot 3", x, y + 30);
+            }
         }
     }
 

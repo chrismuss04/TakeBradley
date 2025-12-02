@@ -16,6 +16,12 @@ public abstract class WeaponItem implements LootItem {
     int damage;
     int currentAmmo;
     double projectileSpeed;
+    long reloadDuration; // Reload time in milliseconds
+    
+    // Reload state tracking
+    private boolean isReloading = false;
+    private long reloadStartTime = 0;
+    private int ammoToLoad = 0; // Ammo that will be loaded when reload completes
 
     public String getName() {
         return name;
@@ -38,12 +44,41 @@ public abstract class WeaponItem implements LootItem {
     public double getProjectileSpeed() {
         return projectileSpeed;
     }
+    public long getReloadDuration() {
+        return reloadDuration;
+    }
+    public boolean isReloading() {
+        return isReloading;
+    }
+    
+    // Public method to update weapon state (should be called every frame)
+    public void update() {
+        checkReloadComplete();
+    }
+    
+    // Check if reload is complete and finalize it
+    private void checkReloadComplete() {
+        if (isReloading && System.currentTimeMillis() - reloadStartTime >= reloadDuration) {
+            // Complete the reload
+            this.currentAmmo += ammoToLoad;
+            ammoToLoad = 0;
+            isReloading = false;
+        }
+    }
     
     public abstract AmmoType getAmmoType();
     public abstract int reload(int availableAmmo);
 
     @Override
     public void use(Entity user) {
+        // Check if reload is complete
+        checkReloadComplete();
+        
+        // Can't shoot while reloading
+        if (isReloading) {
+            return;
+        }
+        
         // Check if we have ammo
         if (currentAmmo <= 0) {
             return;
@@ -70,6 +105,30 @@ public abstract class WeaponItem implements LootItem {
         EventPublisher.getInstance().publish(new ProjectileCreatedEvent(projectile));
 
         // Consume ammo
-        currentAmmo--;
+        this.currentAmmo--;
+    }
+    
+    // Start reload process - returns leftover ammo immediately
+    protected int startReload(int availableAmmo) {
+        // Can't reload if already reloading
+        if (isReloading) {
+            return availableAmmo;
+        }
+        
+        // Can't reload if magazine is full
+        if (currentAmmo >= magazineSize) {
+            return availableAmmo;
+        }
+        
+        // Calculate how much ammo we'll load
+        int needed = magazineSize - currentAmmo;
+        ammoToLoad = Math.min(needed, availableAmmo);
+        
+        // Start reload timer
+        isReloading = true;
+        reloadStartTime = System.currentTimeMillis();
+        
+        // Return leftover ammo (ammo is consumed immediately from inventory)
+        return availableAmmo - ammoToLoad;
     }
 }

@@ -10,6 +10,7 @@ public class P2 extends WeaponItem {
         this.damage = 15;
         this.currentAmmo = 10;
         this.projectileSpeed = 600.0;
+        this.reloadDuration = 1500; // 1.5 seconds to reload
     }
 
     @Override
@@ -19,9 +20,6 @@ public class P2 extends WeaponItem {
 
     @Override
     public int reload(int availableAmmo) {
-        int needed = magazineSize - currentAmmo;
-        int toReload = Math.min(needed, availableAmmo);
-        currentAmmo += toReload;
-        return availableAmmo - toReload;
+        return startReload(availableAmmo);
     }
 }

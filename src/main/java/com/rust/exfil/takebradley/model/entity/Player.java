@@ -162,6 +162,12 @@ public class Player implements Entity, Movable, Combatant {
             moveX = 0;
             moveY = 0;
         }
+        
+        // Update equipped weapon (for reload timer)
+        LootItem equipped = getEquippedItem();
+        if (equipped instanceof WeaponItem) {
+            ((WeaponItem) equipped).update();
+        }
     }
     
     // Set movement intent (called by InputHandler)

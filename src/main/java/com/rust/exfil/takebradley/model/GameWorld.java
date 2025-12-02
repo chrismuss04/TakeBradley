@@ -2,6 +2,7 @@ package com.rust.exfil.takebradley.model;
 
 import com.rust.exfil.takebradley.controller.EventPublisher;
 import com.rust.exfil.takebradley.model.entity.BradleyAPC;
+import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.Projectile;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
@@ -10,6 +11,7 @@ import com.rust.exfil.takebradley.model.map.ExtractionZone;
 import com.rust.exfil.takebradley.model.map.GameMap;
 import com.rust.exfil.takebradley.model.map.Wall;
 import com.rust.exfil.takebradley.model.map.Zone;
+import com.rust.exfil.takebradley.systems.event.EntityDeathEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileHitEvent;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class GameWorld {
     private final List<Combatant> combatants;
     private final List<Projectile> projectiles;
     private final List<Entity> containers;
-    private com.rust.exfil.takebradley.model.entity.Player player;
+    private Player player;
 
     public GameWorld(GameMap map) {
         this.map = map;
@@ -33,12 +35,12 @@ public class GameWorld {
     }
     
     // Set the player reference (called when player is spawned)
-    public void setPlayer(com.rust.exfil.takebradley.model.entity.Player player) {
+    public void setPlayer(Player player) {
         this.player = player;
     }
     
-    // Get the player
-    public com.rust.exfil.takebradley.model.entity.Player getPlayer() {
+    // get the player
+    public Player getPlayer() {
         return player;
     }
 
@@ -95,6 +97,14 @@ public class GameWorld {
 
     // update entities and handle collisions
     public void updateAll(double deltaTime) {
+        // Track entities that were alive before update
+        List<Entity> aliveBeforeUpdate = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.isAlive() && !(entity instanceof Projectile)) {
+                aliveBeforeUpdate.add(entity);
+            }
+        }
+        
         // update all entities
         for (Entity entity : entities) {
             if (!entity.isAlive()) continue;
@@ -119,6 +129,14 @@ public class GameWorld {
         
         // check projectile collisions
         checkProjectileCollisions();
+        
+        // Check for entities that died this frame and publish death events
+        for (Entity entity : aliveBeforeUpdate) {
+            if (!entity.isAlive()) {
+                EventPublisher.getInstance()
+                    .publish(new EntityDeathEvent(entity));
+            }
+        }
         
         // remove 'dead' projectiles
         projectiles.removeIf(p -> !p.isAlive());
@@ -148,10 +166,7 @@ public class GameWorld {
                     
                     // publish hit event for sound effects
                     if (entity instanceof Combatant) {
-                        long hitTime = System.currentTimeMillis();
-                        System.out.println("[HIT] " + entity.getName() + " was hit at " + hitTime);
-                        EventPublisher.getInstance()
-                            .publish(new ProjectileHitEvent(projectile, entity));
+                        EventPublisher.getInstance().publish(new ProjectileHitEvent(projectile, entity));
                     }
                     
                     break;
