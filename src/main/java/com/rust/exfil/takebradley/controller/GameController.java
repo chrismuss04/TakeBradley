@@ -3,6 +3,7 @@ package com.rust.exfil.takebradley.controller;
 
 import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.BradleyAPC;
+import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.systems.event.EntityDeathEvent;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
@@ -97,16 +98,25 @@ public class GameController implements EventObserver {
             EntityDeathEvent deathEvent = 
                 (EntityDeathEvent) event;
             
+            Entity deadEntity = deathEvent.getEntity();
+            double x = deadEntity.getX();
+            double y = deadEntity.getY();
+            
             // if Bradley died, spawn 3 elite crates at its position
-            if (deathEvent.getEntity() instanceof BradleyAPC) {
-                Entity bradley = deathEvent.getEntity();
-                double x = bradley.getX();
-                double y = bradley.getY();
-                
+            if (deadEntity instanceof BradleyAPC) {
                 // spawn 3 elite crates in a small area around Bradley
                 spawnController.spawnEliteCrate("Bradley Loot 1", x - 30, y);
                 spawnController.spawnEliteCrate("Bradley Loot 2", x + 30, y);
                 spawnController.spawnEliteCrate("Bradley Loot 3", x, y + 30);
+            } 
+            // For other combatants (NPCs, Scientists, Players), drop their inventory as a loot crate
+            else if (deadEntity instanceof Combatant) {
+                // check if entity has inventory with items
+                if (deadEntity.getInventory() != null && !deadEntity.getInventory().isEmpty()) {
+                    // spawn a loot crate with the dead entity's inventory
+                    String crateName = deadEntity.getName() + "'s Loot";
+                    spawnController.spawnLootCrateWithInventory(crateName, x, y, deadEntity.getInventory());
+                }
             }
         }
     }

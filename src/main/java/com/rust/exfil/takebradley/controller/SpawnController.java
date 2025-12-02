@@ -2,6 +2,7 @@ package com.rust.exfil.takebradley.controller;
 
 import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.*;
+import com.rust.exfil.takebradley.model.inventory.Inventory;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoFactory;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
@@ -224,5 +225,23 @@ public class SpawnController {
         
         gameWorld.addEntity(eliteCrate);
         return eliteCrate;
+    }
+    
+    // for death drops
+    public LootCrate spawnLootCrateWithInventory(String name, double x, double y, Inventory inventory) {
+        LootCrate crate = (LootCrate) EntityFactory.createEntity(EntityType.LOOT_CRATE, name, x, y);
+        
+        // transfer all items from the given inventory to the crate
+        if (inventory != null) {
+            for (int i = 0; i < inventory.getSize(); i++) {
+                LootItem item = inventory.getItem(i);
+                if (item != null) {
+                    crate.getInventory().addItem(item);
+                }
+            }
+        }
+        
+        gameWorld.addEntity(crate);
+        return crate;
     }
 }

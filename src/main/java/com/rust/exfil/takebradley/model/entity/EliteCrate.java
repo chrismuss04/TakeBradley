@@ -67,5 +67,9 @@ public class EliteCrate implements Entity {
     
     public void setLooted(boolean looted) {
         this.isLooted = looted;
+        // Mark crate as dead when looted so it's filtered out from rendering
+        if (looted) {
+            this.isAlive = false;
+        }
     }
 }

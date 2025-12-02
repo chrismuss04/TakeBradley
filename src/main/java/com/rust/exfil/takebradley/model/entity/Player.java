@@ -8,6 +8,7 @@ import com.rust.exfil.takebradley.model.inventory.Inventory;
 import com.rust.exfil.takebradley.model.inventory.Stash;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
+import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
 
 import java.util.UUID;
@@ -70,8 +71,14 @@ public class Player implements Entity, Movable, Combatant {
     @Override
     public void die() {
         this.isAlive = false;
-        //drop inventory items
-
+        
+        // Unequip gear so it can be looted
+        if (inventory.getEquippedGear() != null) {
+            GearItem gear = inventory.removeEquippedGear();
+            // Try to add gear back to inventory if there's space
+            inventory.addItem(gear);
+        }
+        
     }
 
     @Override
