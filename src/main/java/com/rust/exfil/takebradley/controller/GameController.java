@@ -95,7 +95,7 @@ public class GameController implements EventObserver {
             gameRenderer.getAudioManager().playHitSound();               
         } else if (event instanceof EntityDeathEvent) {
             EntityDeathEvent deathEvent = 
-                (com.rust.exfil.takebradley.systems.event.EntityDeathEvent) event;
+                (EntityDeathEvent) event;
             
             // if Bradley died, spawn 3 elite crates at its position
             if (deathEvent.getEntity() instanceof BradleyAPC) {
