@@ -19,6 +19,7 @@ public class GameWorld {
     private final List<Combatant> combatants;
     private final List<Projectile> projectiles;
     private final List<Entity> containers;
+    private com.rust.exfil.takebradley.model.entity.Player player;
 
     public GameWorld(GameMap map) {
         this.map = map;
@@ -26,6 +27,16 @@ public class GameWorld {
         this.combatants = new ArrayList<>();
         this.projectiles = new ArrayList<>();
         this.containers = new ArrayList<>();
+    }
+    
+    // Set the player reference (called when player is spawned)
+    public void setPlayer(com.rust.exfil.takebradley.model.entity.Player player) {
+        this.player = player;
+    }
+    
+    // Get the player
+    public com.rust.exfil.takebradley.model.entity.Player getPlayer() {
+        return player;
     }
 
     public GameMap getMap() {

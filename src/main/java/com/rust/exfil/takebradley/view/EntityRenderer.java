@@ -49,10 +49,13 @@ public class EntityRenderer {
         Image sprite = getEntitySprite(entity, sprites);
         
         if (sprite != null) {
-            // Draw sprite centered on entity
-            double x = entity.getX() - sprite.getWidth() / 2;
-            double y = entity.getY() - sprite.getHeight() / 2;
-            gc.drawImage(sprite, x, y);
+            // Scale sprites to reasonable size (32x32 for players, 64x64 for Bradley)
+            double targetSize = (entity instanceof BradleyAPC) ? 64 : 32;
+            
+            // Draw sprite centered on entity with scaling
+            double x = entity.getX() - targetSize / 2;
+            double y = entity.getY() - targetSize / 2;
+            gc.drawImage(sprite, x, y, targetSize, targetSize);
         } else {
             // Draw placeholder if sprite missing
             drawEntityPlaceholder(gc, entity, sprites);

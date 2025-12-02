@@ -4,12 +4,15 @@ import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
 import com.rust.exfil.takebradley.systems.event.GameEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
+import com.rust.exfil.takebradley.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 
 public class GameController implements EventObserver {
     private final GameWorld gameWorld;
     private final SpawnController spawnController;
     private final ExfilController exfilController;
+    private GameRenderer gameRenderer;
+    private InputHandler inputHandler;
     private AnimationTimer gameLoop;
     private long lastUpdate = 0;
 
@@ -20,6 +23,16 @@ public class GameController implements EventObserver {
         
         // subscribe to ProjectileCreatedEvent
         EventPublisher.getInstance().subscribe(ProjectileCreatedEvent.class, this);
+    }
+    
+    // Set the game renderer (called from Main after initialization)
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
+    }
+    
+    // Set the input handler (called from Main after initialization)
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
     }
 
     // start a 'raid'
@@ -38,8 +51,18 @@ public class GameController implements EventObserver {
                 double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
                 lastUpdate = now;
                 
+                // handle input
+                if (inputHandler != null) {
+                    inputHandler.update(deltaTime);
+                }
+                
                 // update game state
                 gameWorld.updateAll(deltaTime);
+                
+                // render game state
+                if (gameRenderer != null) {
+                    gameRenderer.render(gameWorld, gameWorld.getPlayer());
+                }
             }
         };
         

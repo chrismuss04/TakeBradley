@@ -40,6 +40,7 @@ public class SpawnController {
         }
         
         gameWorld.addEntity(player);
+        gameWorld.setPlayer(player); // Track player reference
         return player;
     }
 
