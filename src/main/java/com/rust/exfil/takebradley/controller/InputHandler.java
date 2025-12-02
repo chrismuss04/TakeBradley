@@ -7,6 +7,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
+import com.rust.exfil.takebradley.view.LootUIRenderer;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -18,11 +19,16 @@ public class InputHandler {
     private final Player player;
     private final GameWorld gameWorld;
     private final Set<KeyCode> pressedKeys;
+    private LootUIRenderer lootUIRenderer;
     
     public InputHandler(Player player, GameWorld gameWorld) {
         this.player = player;
         this.gameWorld = gameWorld;
         this.pressedKeys = new HashSet<>();
+    }
+    
+    public void setLootUIRenderer(LootUIRenderer lootUIRenderer) {
+        this.lootUIRenderer = lootUIRenderer;
     }
     
     public void handleKeyPressed(KeyEvent event) {
@@ -34,6 +40,12 @@ public class InputHandler {
         }
         
         pressedKeys.add(code);
+        
+        // Handle loot UI input if open
+        if (lootUIRenderer != null && lootUIRenderer.isOpen()) {
+            handleLootUIInput(code);
+            return; // Don't process game input while loot UI is open
+        }
         
         // Inventory slot selection - 1-5
         if (code == KeyCode.DIGIT1) {
@@ -87,15 +99,61 @@ public class InputHandler {
             }
         }
         
-        // loot container - F
+        // loot container - F (open loot UI)
         else if (code == KeyCode.F) {
             // find nearest container within interaction range (50 pixels)
             Entity nearestContainer = 
                 gameWorld.findNearestContainer(player, 50.0);
             
-            if (nearestContainer != null) {
-                // loot all items from container
-                gameWorld.lootContainer(player, nearestContainer);
+            if (nearestContainer != null && lootUIRenderer != null) {
+                // Open loot UI instead of auto-looting
+                lootUIRenderer.openLootUI(nearestContainer, 800, 600); // TODO: Get canvas size dynamically
+            }
+        }
+    }
+    
+    /**
+     * Handle input when loot UI is open
+     */
+    private void handleLootUIInput(KeyCode code) {
+        if (code == KeyCode.ESCAPE) {
+            // Close loot UI
+            lootUIRenderer.closeLootUI();
+        } else if (code == KeyCode.W || code == KeyCode.UP) {
+            // Select item above
+            lootUIRenderer.selectUp();
+        } else if (code == KeyCode.S || code == KeyCode.DOWN) {
+            // Select item below
+            lootUIRenderer.selectDown();
+        } else if (code == KeyCode.A || code == KeyCode.LEFT) {
+            // Select item to the left
+            lootUIRenderer.selectLeft();
+        } else if (code == KeyCode.D || code == KeyCode.RIGHT) {
+            // Select item to the right
+            lootUIRenderer.selectRight();
+        } else if (code == KeyCode.E) {
+            // Take selected item
+            Entity container = lootUIRenderer.getCurrentContainer();
+            int slotIndex = lootUIRenderer.getSelectedSlotIndex();
+            
+            if (container != null) {
+                boolean success = gameWorld.lootItem(player, container, slotIndex);
+                
+                if (success) {
+                    // Move to next item or close if empty
+                    if (container.getInventory().isEmpty()) {
+                        lootUIRenderer.closeLootUI();
+                    } else {
+                        lootUIRenderer.selectRight();
+                    }
+                }
+            }
+        } else if (code == KeyCode.F) {
+            // Take all items
+            Entity container = lootUIRenderer.getCurrentContainer();
+            if (container != null) {
+                gameWorld.lootContainer(player, container);
+                lootUIRenderer.closeLootUI();
             }
         }
     }
@@ -107,6 +165,12 @@ public class InputHandler {
     
     // Called each frame to set movement intent based on pressed keys
     public void update(double deltaTime) {
+        // Don't process movement if loot UI is open
+        if (lootUIRenderer != null && lootUIRenderer.isOpen()) {
+            player.setMovementIntent(0, 0);
+            return;
+        }
+        
         // Set movement intent based on currently pressed keys
         // The actual movement will be applied in Player.update() which is called by GameWorld.updateAll()
         double dx = 0;

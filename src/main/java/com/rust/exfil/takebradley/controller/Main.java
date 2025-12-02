@@ -29,6 +29,7 @@ public class Main extends Application {
         
         // set up input handler
         inputHandler = new InputHandler(gameController.getGameWorld().getPlayer(), gameController.getGameWorld());
+        inputHandler.setLootUIRenderer(gameRenderer.getLootUIRenderer());
         
         // create scene
         StackPane root = new StackPane(canvas);

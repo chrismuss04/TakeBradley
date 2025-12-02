@@ -130,6 +130,25 @@ public class HUDRenderer {
                 
                 // draw slot number
                 gc.fillText(String.valueOf(i + 1), slotX + 5, slotY + 12);
+                
+                // Draw quantity/ammo info below name
+                String quantityText = "";
+                if (item instanceof com.rust.exfil.takebradley.model.loot.ammo.AmmoItem) {
+                    com.rust.exfil.takebradley.model.loot.ammo.AmmoItem ammo = 
+                        (com.rust.exfil.takebradley.model.loot.ammo.AmmoItem) item;
+                    quantityText = "x" + ammo.getQuantity();
+                } else if (item instanceof WeaponItem) {
+                    WeaponItem weapon = (WeaponItem) item;
+                    quantityText = weapon.getCurrentAmmo() + "/" + weapon.getMagazineSize();
+                } else if (item instanceof com.rust.exfil.takebradley.model.loot.medical.MedicalItem) {
+                    com.rust.exfil.takebradley.model.loot.medical.MedicalItem medItem = 
+                        (com.rust.exfil.takebradley.model.loot.medical.MedicalItem) item;
+                    quantityText = "x" + medItem.getQuantity();
+                }
+                
+                if (!quantityText.isEmpty()) {
+                    gc.fillText(quantityText, slotX + 5, slotY + 40);
+                }
             } else {
                 // draw empty slot indicator
                 gc.setFill(Color.GRAY);

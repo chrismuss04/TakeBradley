@@ -17,6 +17,7 @@ public class GameRenderer {
     private ProjectileRenderer projectileRenderer;
     private HUDRenderer hudRenderer;
     private AudioManager audioManager;
+    private LootUIRenderer lootUIRenderer;
     
     
     public void initialize(Canvas canvas) {
@@ -41,6 +42,9 @@ public class GameRenderer {
         // initialize audio manager and load sounds
         this.audioManager = new AudioManager();
         this.audioManager.loadSounds();
+        
+        // initialize loot UI renderer
+        this.lootUIRenderer = new LootUIRenderer();
     }
     
     // render game state, called by controller
@@ -72,6 +76,11 @@ public class GameRenderer {
         
         // render hud in fixed screen position
         hudRenderer.renderHUD(gc, player);
+        
+        // render loot UI overlay if open (on top of everything)
+        if (lootUIRenderer.isOpen()) {
+            lootUIRenderer.renderLootUI(gc);
+        }
     }
     
     public Camera getCamera() {
@@ -88,5 +97,9 @@ public class GameRenderer {
     
     public AudioManager getAudioManager() {
         return audioManager;
+    }
+    
+    public LootUIRenderer getLootUIRenderer() {
+        return lootUIRenderer;
     }
 }

@@ -140,5 +140,14 @@ public class Inventory {
         
         return false;
     }
+    
+    public boolean isEmpty() {
+        for (InventorySlot slot : slots) {
+            if (!slot.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

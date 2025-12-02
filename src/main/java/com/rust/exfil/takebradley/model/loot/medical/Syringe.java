@@ -14,8 +14,15 @@ public class Syringe extends MedicalItem{
         if(user instanceof Combatant){
             Combatant combatant = (Combatant)user;
             combatant.heal(40);
-            int i =  combatant.getSelectedSlotIndex();
-            user.getInventory().removeItem(i);
+            
+            // Decrement quantity
+            quantity--;
+            
+            // Remove from inventory if quantity reaches 0
+            if (quantity <= 0) {
+                int i = combatant.getSelectedSlotIndex();
+                user.getInventory().removeItem(i);
+            }
         }
 
     }
