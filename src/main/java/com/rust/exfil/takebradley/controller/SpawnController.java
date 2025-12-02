@@ -199,8 +199,15 @@ public class SpawnController {
                     
                 case 1: // Large ammo stacks
                     AmmoType[] ammoTypes = {AmmoType.RIFLE, AmmoType.ROCKET};
-                    AmmoItem ammo = AmmoFactory.create(ammoTypes[random.nextInt(ammoTypes.length)]);
-                    ammo.setQuantity(60 + random.nextInt(61)); // 60-120 rounds
+                    AmmoType type = ammoTypes[random.nextInt(ammoTypes.length)];
+                    AmmoItem ammo = AmmoFactory.create(type);
+                    if(type == AmmoType.ROCKET) {
+                        // 3-6 rockets
+                        ammo.setQuantity(3 + random.nextInt(4));
+                    } else {
+                        // 60-120 rifle rounds
+                        ammo.setQuantity(60 + random.nextInt(61)); 
+                    }
                     eliteCrate.getInventory().addItem(ammo);
                     break;
                     
