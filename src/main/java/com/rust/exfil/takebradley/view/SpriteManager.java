@@ -43,48 +43,48 @@ public class SpriteManager {
     
     private void loadPlayerSprites() {
         // no gear
-        playerNoGearN = loadSprite("/sprites/player_no_gear_north.png");
-        playerNoGearE = loadSprite("/sprites/player_no_gear_east.png");
-        playerNoGearS = loadSprite("/sprites/player_no_gear_south.png");
-        playerNoGearW = loadSprite("/sprites/player_no_gear_west.png");
+        playerNoGearN = loadSprite("/com/rust/exfil/takebradley/sprites/player_no_gear_north.png");
+        playerNoGearE = loadSprite("/com/rust/exfil/takebradley/sprites/player_no_gear_east.png");
+        playerNoGearS = loadSprite("/com/rust/exfil/takebradley/sprites/player_no_gear_south.png");
+        playerNoGearW = loadSprite("/com/rust/exfil/takebradley/sprites/player_no_gear_west.png");
         
         // Hazmat
-        playerHazmatN = loadSprite("/sprites/player_hazmat_north.png");
-        playerHazmatE = loadSprite("/sprites/player_hazmat_east.png");
-        playerHazmatS = loadSprite("/sprites/player_hazmat_south.png");
-        playerHazmatW = loadSprite("/sprites/player_hazmat_west.png");
+        playerHazmatN = loadSprite("/com/rust/exfil/takebradley/sprites/player_hazmat_north.png");
+        playerHazmatE = loadSprite("/com/rust/exfil/takebradley/sprites/player_hazmat_east.png");
+        playerHazmatS = loadSprite("/com/rust/exfil/takebradley/sprites/player_hazmat_south.png");
+        playerHazmatW = loadSprite("/com/rust/exfil/takebradley/sprites/player_hazmat_west.png");
         
         // Road Sign
-        playerRoadsignN = loadSprite("/sprites/player_roadsign_north.png");
-        playerRoadsignE = loadSprite("/sprites/player_roadsign_east.png");
-        playerRoadsignS = loadSprite("/sprites/player_roadsign_south.png");
-        playerRoadsignW = loadSprite("/sprites/player_roadsign_west.png");
+        playerRoadsignN = loadSprite("/com/rust/exfil/takebradley/sprites/player_roadsign_north.png");
+        playerRoadsignE = loadSprite("/com/rust/exfil/takebradley/sprites/player_roadsign_east.png");
+        playerRoadsignS = loadSprite("/com/rust/exfil/takebradley/sprites/player_roadsign_south.png");
+        playerRoadsignW = loadSprite("/com/rust/exfil/takebradley/sprites/player_roadsign_west.png");
         
         // Heavy Pot
-        playerHeavypotN = loadSprite("/sprites/player_heavypot_north.png");
-        playerHeavypotE = loadSprite("/sprites/player_heavypot_east.png");
-        playerHeavypotS = loadSprite("/sprites/player_heavypot_south.png");
-        playerHeavypotW = loadSprite("/sprites/player_heavypot_west.png");
+        playerHeavypotN = loadSprite("/com/rust/exfil/takebradley/sprites/player_heavypot_north.png");
+        playerHeavypotE = loadSprite("/com/rust/exfil/takebradley/sprites/player_heavypot_east.png");
+        playerHeavypotS = loadSprite("/com/rust/exfil/takebradley/sprites/player_heavypot_south.png");
+        playerHeavypotW = loadSprite("/com/rust/exfil/takebradley/sprites/player_heavypot_west.png");
         
         // Wolf Head
-        playerWolfheadN = loadSprite("/sprites/player_wolfhead_north.png");
-        playerWolfheadE = loadSprite("/sprites/player_wolfhead_east.png");
-        playerWolfheadS = loadSprite("/sprites/player_wolfhead_south.png");
-        playerWolfheadW = loadSprite("/sprites/player_wolfhead_west.png");
+        playerWolfheadN = loadSprite("/com/rust/exfil/takebradley/sprites/player_wolfhead_north.png");
+        playerWolfheadE = loadSprite("/com/rust/exfil/takebradley/sprites/player_wolfhead_east.png");
+        playerWolfheadS = loadSprite("/com/rust/exfil/takebradley/sprites/player_wolfhead_south.png");
+        playerWolfheadW = loadSprite("/com/rust/exfil/takebradley/sprites/player_wolfhead_west.png");
     }
     
     private void loadBradleySprites() {
-        bradleyN = loadSprite("/sprites/bradley_north.png");
-        bradleyE = loadSprite("/sprites/bradley_east.png");
-        bradleyS = loadSprite("/sprites/bradley_south.png");
-        bradleyW = loadSprite("/sprites/bradley_west.png");
+        bradleyN = loadSprite("/com/rust/exfil/takebradley/sprites/tank_north.png");
+        bradleyE = loadSprite("/com/rust/exfil/takebradley/sprites/tank_east.png");
+        bradleyS = loadSprite("/com/rust/exfil/takebradley/sprites/tank_south.png");
+        bradleyW = loadSprite("/com/rust/exfil/takebradley/sprites/tank_west.png");
     }
     
     private void loadOtherSprites() {
-        crateNormal = loadSprite("/sprites/crate_normal.png");
-        crateElite = loadSprite("/sprites/crate_elite.png");
-        projectile = loadSprite("/sprites/projectile.png");
-        wall = loadSprite("/sprites/wall.png");
+        crateNormal = loadSprite("/com/rust/exfil/takebradley/sprites/crate_normal.png");
+        crateElite = loadSprite("/com/rust/exfil/takebradley/sprites/crate_elite.png");
+        projectile = loadSprite("/com/rust/exfil/takebradley/sprites/projectile.png");
+        wall = loadSprite("/com/rust/exfil/takebradley/sprites/wall.png");
     }
     
     /**

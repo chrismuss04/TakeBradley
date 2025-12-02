@@ -7,7 +7,7 @@ public class AudioManager {
     
     
     public void loadSounds() {
-        hitSound = loadSound("/sounds/hit.wav");
+        hitSound = loadSound("/com/rust/exfil/takebradley/sounds/hit.wav");
     }
     
     // load a sound clip from path
