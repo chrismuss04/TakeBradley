@@ -10,8 +10,8 @@ import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
-import com.rust.exfil.takebradley.model.strategy.movement.AIMovementStrategy;
-import com.rust.exfil.takebradley.model.strategy.movement.MovementStrategy;
+import com.rust.exfil.takebradley.model.strategy.AIMovementStrategy;
+import com.rust.exfil.takebradley.model.strategy.CombatStrategy;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     private int selectedSlotIndex = 0;
     private double damageResistance;
     private Direction facingDirection = com.rust.exfil.takebradley.model.Direction.RIGHT;
-    private final MovementStrategy movementStrategy;
+    private final CombatStrategy combatStrategy;
     private GameWorld gameWorld;
 
     NpcPlayer(String name, double x, double y) {
@@ -37,7 +37,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
         this.y = y;
         this.health = maxHealth;
         this.inventory = new Inventory(8, this);
-        this.movementStrategy = new AIMovementStrategy();
+        this.combatStrategy = new AIMovementStrategy();
     }
     
     public void setGameWorld(GameWorld gameWorld) {
@@ -164,7 +164,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
         if (!isAlive || gameWorld == null) return;
         
         // Execute movement strategy (handles both movement and combat)
-        movementStrategy.execute(this, gameWorld, deltaTime);
+        combatStrategy.execute(this, gameWorld, deltaTime);
     }
 
     @Override

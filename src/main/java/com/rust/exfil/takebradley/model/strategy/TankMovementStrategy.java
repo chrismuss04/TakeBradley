@@ -1,4 +1,4 @@
-package com.rust.exfil.takebradley.model.strategy.movement;
+package com.rust.exfil.takebradley.model.strategy;
 
 import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.GameWorld;

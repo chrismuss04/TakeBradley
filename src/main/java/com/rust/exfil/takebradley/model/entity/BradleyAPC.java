@@ -9,8 +9,8 @@ import com.rust.exfil.takebradley.model.inventory.Inventory;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
-import com.rust.exfil.takebradley.model.strategy.movement.MovementStrategy;
-import com.rust.exfil.takebradley.model.strategy.movement.TankMovementStrategy;
+import com.rust.exfil.takebradley.model.strategy.TankMovementStrategy;
+import com.rust.exfil.takebradley.model.strategy.CombatStrategy;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private int selectedSlotIndex = 0;
     private double damageResistance = 0.0;
     private Direction facingDirection = com.rust.exfil.takebradley.model.Direction.RIGHT;
-    private final MovementStrategy movementStrategy;
+    private final CombatStrategy combatStrategy;
     private GameWorld gameWorld;
 
     BradleyAPC(String name, double x, double y) {
@@ -36,7 +36,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         this.y = y;
         this.health = maxHealth;
         this.inventory = new Inventory(1, this);
-        this.movementStrategy = new TankMovementStrategy();
+        this.combatStrategy = new TankMovementStrategy();
     }
     
     public void setGameWorld(GameWorld gameWorld) {
@@ -156,7 +156,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         if (!isAlive || gameWorld == null) return;
         
         // Execute movement strategy (handles both movement and combat)
-        movementStrategy.execute(this, gameWorld, deltaTime);
+        combatStrategy.execute(this, gameWorld, deltaTime);
     }
 
     @Override

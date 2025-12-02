@@ -8,8 +8,8 @@ import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
-import com.rust.exfil.takebradley.model.strategy.movement.MovementStrategy;
-import com.rust.exfil.takebradley.model.strategy.movement.StationaryCombatStrategy;
+import com.rust.exfil.takebradley.model.strategy.CombatStrategy;
+import com.rust.exfil.takebradley.model.strategy.StationaryCombatStrategy;
 import com.rust.exfil.takebradley.model.Direction;
 
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class Scientist implements Entity, Combatant {
     private double damageResistance = 0.0;
     private Direction facingDirection = Direction.RIGHT;
     private GameWorld gameWorld;
-    private final MovementStrategy combatStrategy;
+    private final CombatStrategy combatStrategy;
 
     Scientist(String name, double x, double y) {
         this.id = UUID.randomUUID();
