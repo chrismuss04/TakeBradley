@@ -11,6 +11,8 @@ public class RocketLauncher extends WeaponItem{
         this.currentAmmo = 1;
         this.projectileSpeed = 400.0;
         this.reloadDuration = 3000; // 3 seconds to reload
+        this.isFullAuto = false; // Semi-auto (one shot per trigger pull)
+        this.roundsPerMinute = 0; // Not used for semi-auto
     }
 
     @Override

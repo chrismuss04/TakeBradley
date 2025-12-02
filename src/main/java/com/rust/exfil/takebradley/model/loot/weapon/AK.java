@@ -11,6 +11,8 @@ public class AK extends WeaponItem{
         this.currentAmmo = 30;
         this.projectileSpeed = 800.0;
         this.reloadDuration = 2000; // 2 seconds to reload
+        this.isFullAuto = true;
+        this.roundsPerMinute = 450; // 450 RPM 
     }
 
     @Override

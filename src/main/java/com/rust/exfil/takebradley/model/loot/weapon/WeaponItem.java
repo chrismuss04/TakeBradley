@@ -17,11 +17,16 @@ public abstract class WeaponItem implements LootItem {
     int currentAmmo;
     double projectileSpeed;
     long reloadDuration; // Reload time in milliseconds
+    boolean isFullAuto; // True for full-auto, false for semi-auto
+    int roundsPerMinute; // Fire rate for full-auto weapons
     
     // Reload state tracking
     private boolean isReloading = false;
     private long reloadStartTime = 0;
     private int ammoToLoad = 0; // Ammo that will be loaded when reload completes
+    
+    // Fire rate tracking for full-auto
+    private long lastFireTime = 0;
 
     public String getName() {
         return name;
@@ -51,9 +56,34 @@ public abstract class WeaponItem implements LootItem {
         return isReloading;
     }
     
+    public boolean isFullAuto() {
+        return isFullAuto;
+    }
+    
+    public int getRoundsPerMinute() {
+        return roundsPerMinute;
+    }
+    
     // Public method to update weapon state (should be called every frame)
     public void update() {
         checkReloadComplete();
+    }
+    
+    /**
+     * Check if weapon can fire based on fire rate
+     * For full-auto weapons, enforces RPM limit
+     * For semi-auto weapons, always returns true (handled by input)
+     */
+    public boolean canFire() {
+        if (!isFullAuto) {
+            return true; // Semi-auto handled by input system
+        }
+        
+        // Calculate minimum time between shots based on RPM
+        long timeBetweenShots = 60000 / roundsPerMinute; // milliseconds
+        long currentTime = System.currentTimeMillis();
+        
+        return (currentTime - lastFireTime) >= timeBetweenShots;
     }
     
     // Check if reload is complete and finalize it
@@ -83,6 +113,11 @@ public abstract class WeaponItem implements LootItem {
         if (currentAmmo <= 0) {
             return;
         }
+        
+        // Check fire rate for full-auto weapons
+        if (!canFire()) {
+            return;
+        }
 
         // Get direction from user if they're a combatant, otherwise default to RIGHT
         Direction direction = Direction.RIGHT;
@@ -106,6 +141,9 @@ public abstract class WeaponItem implements LootItem {
 
         // Consume ammo
         this.currentAmmo--;
+        
+        // Update last fire time
+        lastFireTime = System.currentTimeMillis();
     }
     
     // Start reload process - returns leftover ammo immediately

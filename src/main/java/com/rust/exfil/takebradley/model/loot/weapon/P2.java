@@ -7,10 +7,12 @@ public class P2 extends WeaponItem {
         this.name = "P2";
         this.description = "A semi-automatic pistol";
         this.magazineSize = 10;
-        this.damage = 15;
+        this.damage = 18;
         this.currentAmmo = 10;
         this.projectileSpeed = 600.0;
         this.reloadDuration = 1500; // 1.5 seconds to reload
+        this.isFullAuto = false; // Semi-auto
+        this.roundsPerMinute = 0; // Not used for semi-auto
     }
 
     @Override

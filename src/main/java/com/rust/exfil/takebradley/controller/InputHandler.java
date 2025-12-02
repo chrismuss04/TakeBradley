@@ -171,6 +171,19 @@ public class InputHandler {
             return;
         }
         
+        // Handle full-auto firing if space is held down
+        if (pressedKeys.contains(KeyCode.SPACE)) {
+            LootItem equippedItem = player.getEquippedItem();
+            if (equippedItem instanceof WeaponItem) {
+                WeaponItem weapon = (WeaponItem) equippedItem;
+                // For full-auto weapons, fire continuously while space is held
+                if (weapon.isFullAuto()) {
+                    player.fireWeapon();
+                }
+                // For semi-auto, firing is handled in handleKeyPressed (one shot per press)
+            }
+        }
+        
         // Set movement intent based on currently pressed keys
         // The actual movement will be applied in Player.update() which is called by GameWorld.updateAll()
         double dx = 0;

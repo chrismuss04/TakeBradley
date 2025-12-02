@@ -11,6 +11,8 @@ public class MP5 extends WeaponItem{
         this.currentAmmo = 30;
         this.projectileSpeed = 700.0;
         this.reloadDuration = 1800; // 1.8 seconds to reload
+        this.isFullAuto = true;
+        this.roundsPerMinute = 600; // 600 RPM (faster than AK)
     }
 
     @Override
