@@ -92,17 +92,6 @@ public class GameInitializer {
         }
     }
     
-    // get a random position in a zone
-    private static double[] getRandomPositionInZone(Zone zone) {
-        // Add padding to avoid spawning too close to walls
-        double padding = 20;
-        
-        double x = zone.getX() + padding + random.nextDouble() * (zone.getWidth() - 2 * padding);
-        double y = zone.getY() + padding + random.nextDouble() * (zone.getHeight() - 2 * padding);
-        
-        return new double[]{x, y};
-    }
-    
     // Get a random position in a zone that doesn't overlap with existing entities
     private static double[] getRandomPositionInZoneWithoutOverlap(Zone zone, GameWorld gameWorld, double entitySize, int maxAttempts) {
         double padding = 20;

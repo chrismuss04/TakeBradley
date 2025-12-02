@@ -4,6 +4,7 @@ import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
 import com.rust.exfil.takebradley.systems.event.GameEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
+import com.rust.exfil.takebradley.systems.event.ProjectileHitEvent;
 import com.rust.exfil.takebradley.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 
@@ -21,8 +22,9 @@ public class GameController implements EventObserver {
         this.spawnController = spawnController;
         this.exfilController = exfilController;
         
-        // subscribe to ProjectileCreatedEvent
+        // subscribe to events
         EventPublisher.getInstance().subscribe(ProjectileCreatedEvent.class, this);
+        EventPublisher.getInstance().subscribe(com.rust.exfil.takebradley.systems.event.ProjectileHitEvent.class, this);
     }
     
     // Set the game renderer (called from Main after initialization)
@@ -84,6 +86,8 @@ public class GameController implements EventObserver {
         if (event instanceof ProjectileCreatedEvent) {
             ProjectileCreatedEvent projectileEvent = (ProjectileCreatedEvent) event;
             gameWorld.addEntity(projectileEvent.getProjectile());
+        } else if (event instanceof ProjectileHitEvent) {
+                gameRenderer.getAudioManager().playHitSound();               
         }
     }
 

@@ -1,5 +1,6 @@
 package com.rust.exfil.takebradley.model;
 
+import com.rust.exfil.takebradley.controller.EventPublisher;
 import com.rust.exfil.takebradley.model.entity.BradleyAPC;
 import com.rust.exfil.takebradley.model.entity.Projectile;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
@@ -9,6 +10,7 @@ import com.rust.exfil.takebradley.model.map.ExtractionZone;
 import com.rust.exfil.takebradley.model.map.GameMap;
 import com.rust.exfil.takebradley.model.map.Wall;
 import com.rust.exfil.takebradley.model.map.Zone;
+import com.rust.exfil.takebradley.systems.event.ProjectileHitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,8 +143,18 @@ public class GameWorld {
                 if (!entity.isAlive()) continue;
                 
                 if (projectile.isCollidingWith(entity)) {
+                    // Apply damage
                     projectile.hit(entity);
-                    break; // Projectile is destroyed, stop checking
+                    
+                    // publish hit event for sound effects
+                    if (entity instanceof Combatant) {
+                        long hitTime = System.currentTimeMillis();
+                        System.out.println("[HIT] " + entity.getName() + " was hit at " + hitTime);
+                        EventPublisher.getInstance()
+                            .publish(new ProjectileHitEvent(projectile, entity));
+                    }
+                    
+                    break;
                 }
             }
         }

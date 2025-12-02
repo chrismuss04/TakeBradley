@@ -5,7 +5,6 @@ import javafx.scene.media.AudioClip;
 public class AudioManager {
     private AudioClip hitSound;
     
-    
     public void loadSounds() {
         hitSound = loadSound("/com/rust/exfil/takebradley/sounds/hit.wav");
     }
@@ -25,6 +24,8 @@ public class AudioManager {
     // play hit sound when entity is hit
     public void playHitSound() {
         if (hitSound != null) {
+            long soundTime = System.currentTimeMillis();
+            System.out.println("[SOUND] Playing hit sound at: " + soundTime + "ms");
             hitSound.play();
         }
     }

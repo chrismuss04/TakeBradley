@@ -4,6 +4,7 @@ import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.*;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoFactory;
+import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoType;
 import com.rust.exfil.takebradley.model.loot.gear.GearFactory;
 import com.rust.exfil.takebradley.model.loot.gear.GearType;
@@ -41,6 +42,15 @@ public class SpawnController {
             for (LootItem item : loadout) {
                 player.getInventory().addItem(item);
             }
+        }
+        else {
+            // Give player starting loadout: AK with ammo
+        WeaponItem ak = WeaponFactory.create(WeaponType.AK);
+        AmmoItem rifleAmmo = AmmoFactory.create(AmmoType.RIFLE);
+        rifleAmmo.setQuantity(120); // 4 magazines worth
+        
+        player.getInventory().addItem(ak);
+        player.getInventory().addItem(rifleAmmo);
         }
         
         gameWorld.addEntity(player);
