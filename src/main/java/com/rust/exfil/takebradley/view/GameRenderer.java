@@ -13,6 +13,10 @@ public class GameRenderer {
     private SpriteManager spriteManager;
     private BackgroundRenderer backgroundRenderer;
     private WallRenderer wallRenderer;
+    private EntityRenderer entityRenderer;
+    private ProjectileRenderer projectileRenderer;
+    private HUDRenderer hudRenderer;
+    private AudioManager audioManager;
     
     
     public void initialize(Canvas canvas) {
@@ -27,9 +31,16 @@ public class GameRenderer {
         this.spriteManager = new SpriteManager();
         this.spriteManager.loadSprites();
         
-        // Initialize renderers
+        // initialize renderers
         this.backgroundRenderer = new BackgroundRenderer();
         this.wallRenderer = new WallRenderer();
+        this.entityRenderer = new EntityRenderer(camera);
+        this.projectileRenderer = new ProjectileRenderer();
+        this.hudRenderer = new HUDRenderer();
+        
+        // initialize audio manager and load sounds
+        this.audioManager = new AudioManager();
+        this.audioManager.loadSounds();
     }
     
     // render game state, called by controller
@@ -48,18 +59,19 @@ public class GameRenderer {
         gc.save();
         gc.translate(-camera.getCameraX(), -camera.getCameraY());
         
-        // Render world layers
+        // render world layers
         backgroundRenderer.renderBackground(gc, world.getMap());
         backgroundRenderer.renderZones(gc, world.getMap());
         wallRenderer.renderWalls(gc, world.getMap().getWalls());
+        entityRenderer.renderEntities(gc, world.getEntities(), spriteManager);
+        projectileRenderer.renderProjectiles(gc, world.getEntities(), spriteManager);
         
-        // TODO: Render entities
-        // TODO: Render projectiles
         
         // Remove camera transformation
         gc.restore();
         
-        // TODO: Render HUD (fixed screen position)
+        // render hud in fixed screen position
+        hudRenderer.renderHUD(gc, player);
     }
     
     public Camera getCamera() {
@@ -72,5 +84,9 @@ public class GameRenderer {
     
     public GraphicsContext getGraphicsContext() {
         return gc;
+    }
+    
+    public AudioManager getAudioManager() {
+        return audioManager;
     }
 }
