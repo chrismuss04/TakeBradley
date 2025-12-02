@@ -27,6 +27,10 @@ public class SpawnController {
         this.gameWorld = gameWorld;
         this.random = new Random(seed);
     }
+    
+    public GameWorld getGameWorld() {
+        return gameWorld;
+    }
 
     // spawn player at x,y with loadout (if present)
     public Player spawnPlayer(double x, double y, List<LootItem> loadout) {
@@ -61,8 +65,9 @@ public class SpawnController {
         }
         
         // randomize gear type: Road Sign or Wolf Head
-        GearType gear = random.nextBoolean() ? GearType.ROADSIGN : GearType.WOLFHEAD;
-        npc.getInventory().addItem(GearFactory.create(gear));
+        GearType gearType = random.nextBoolean() ? GearType.ROADSIGN : GearType.WOLFHEAD;
+        npc.getInventory().addItem(GearFactory.create(gearType));
+        npc.getInventory().equipGear();
         
         gameWorld.addEntity(npc);
         return npc;
@@ -78,6 +83,8 @@ public class SpawnController {
         scientist.getInventory().addItem(WeaponFactory.create(weapon));
         scientist.getInventory().addItem(AmmoFactory.create(AmmoType.PISTOL));
         scientist.getInventory().addItem(GearFactory.create(GearType.HAZMAT));
+        
+        scientist.getInventory().equipGear();
         
         gameWorld.addEntity(scientist);
         return scientist;

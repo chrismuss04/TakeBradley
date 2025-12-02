@@ -106,4 +106,16 @@ public class Inventory {
         return -1; // Not found
     }
 
+    // equip first available gear - for npc/scientist spawn
+    public void equipGear() {
+        for (InventorySlot slot : slots) {
+            LootItem item = slot.getItem();
+            if (item instanceof GearItem) {
+                setEquippedGear((GearItem) item);     
+                return;
+            }
+            
+        }
+    }
+
 }

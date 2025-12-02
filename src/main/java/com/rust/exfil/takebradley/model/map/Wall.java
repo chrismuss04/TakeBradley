@@ -42,7 +42,24 @@ public class Wall {
             return false; // Openings allow passage
         }
 
+        // check point collision
         return px >= x && px < x + width &&
                py >= y && py < y + height;
+    }
+    
+    // check collision with entity bounds for collision detection
+    public boolean intersectsEntity(double entityX, double entityY, double entitySize) {
+        if (isOpening) {
+            return false; // Openings allow passage
+        }
+        
+        // axis aligned bounding box collision detection
+        double entityLeft = entityX - entitySize / 2;
+        double entityRight = entityX + entitySize / 2;
+        double entityTop = entityY - entitySize / 2;
+        double entityBottom = entityY + entitySize / 2;
+        
+        return entityRight > x && entityLeft < x + width &&
+               entityBottom > y && entityTop < y + height;
     }
 }

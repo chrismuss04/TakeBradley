@@ -19,8 +19,10 @@ public class Player implements Entity, Movable, Combatant {
     private double x, y;
     private int health;
     private final int maxHealth = 100;
-    private double speed = 5.0;
+    private double speed = 2.0;
     private boolean isAlive = true;
+    private double moveX = 0;  // Movement intent X
+    private double moveY = 0;  // Movement intent Y
     private Inventory inventory;
     private Stash stash;
     private int selectedSlotIndex = 0;
@@ -153,7 +155,19 @@ public class Player implements Entity, Movable, Combatant {
 
     @Override
     public void update(double deltaTime) {
-        // Player-specific update logic can be added here
+        // Apply movement intent
+        if (moveX != 0 || moveY != 0) {
+            move(moveX, moveY);
+            // Reset movement intent after applying
+            moveX = 0;
+            moveY = 0;
+        }
+    }
+    
+    // Set movement intent (called by InputHandler)
+    public void setMovementIntent(double dx, double dy) {
+        this.moveX = dx;
+        this.moveY = dy;
     }
 
     @Override

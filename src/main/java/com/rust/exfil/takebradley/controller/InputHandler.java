@@ -63,24 +63,30 @@ public class InputHandler {
         pressedKeys.remove(code);
     }
     
-    // Called each frame to handle continuous movement
+    // Called each frame to set movement intent based on pressed keys
     public void update(double deltaTime) {
-        // Handle movement based on currently pressed keys
-        // move() expects direction (-1, 0, 1) and multiplies by speed internally
+        // Set movement intent based on currently pressed keys
+        // The actual movement will be applied in Player.update() which is called by GameWorld.updateAll()
+        double dx = 0;
+        double dy = 0;
+        
         if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.UP)) {
             player.setFacingDirection(Direction.UP);
-            player.move(0, -1);
+            dy = -1;
         } else if (pressedKeys.contains(KeyCode.S) || pressedKeys.contains(KeyCode.DOWN)) {
             player.setFacingDirection(Direction.DOWN);
-            player.move(0, 1);
+            dy = 1;
         }
         
         if (pressedKeys.contains(KeyCode.A) || pressedKeys.contains(KeyCode.LEFT)) {
             player.setFacingDirection(Direction.LEFT);
-            player.move(-1, 0);
+            dx = -1;
         } else if (pressedKeys.contains(KeyCode.D) || pressedKeys.contains(KeyCode.RIGHT)) {
             player.setFacingDirection(Direction.RIGHT);
-            player.move(1, 0);
+            dx = 1;
         }
+        
+        // Set the movement intent - actual movement happens in Player.update()
+        player.setMovementIntent(dx, dy);
     }
 }

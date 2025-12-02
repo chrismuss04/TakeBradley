@@ -81,8 +81,8 @@ public class SpriteManager {
     }
     
     private void loadOtherSprites() {
-        crateNormal = loadSprite("/com/rust/exfil/takebradley/sprites/crate_normal.png");
-        crateElite = loadSprite("/com/rust/exfil/takebradley/sprites/crate_elite.png");
+        crateNormal = loadSprite("/com/rust/exfil/takebradley/sprites/loot_crate.png");
+        crateElite = loadSprite("/com/rust/exfil/takebradley/sprites/elite_loot_crate.png");
         projectile = loadSprite("/com/rust/exfil/takebradley/sprites/projectile.png");
         wall = loadSprite("/com/rust/exfil/takebradley/sprites/wall.png");
     }
@@ -94,6 +94,7 @@ public class SpriteManager {
         try {
             Image image = new Image(getClass().getResourceAsStream(path));
             spriteCache.put(path, image);
+            System.out.println("Successfully loaded sprite: " + path);
             return image;
         } catch (Exception e) {
             System.err.println("Failed to load sprite: " + path + " - " + e.getMessage());

@@ -10,36 +10,40 @@ public class MapLoader {
         GameMap map = new GameMap();
         
         // === ZONES ===
-        // extraction zone - where player can extract
-        map.addZone(ZoneFactory.createZone(ZoneType.EXTRACT_ZONE, 0, 20, 10, 10));
-        // bradley zone - where bradley apc spawns and roams
-        map.addZone(ZoneFactory.createZone(ZoneType.BRADLEY_ZONE, 50, 10, 30, 20));
-        // loot room zones - where 2x scientist and loot/elite crates spawn
-        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 40, 30, 10, 10));
-        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 40, 40, 10, 10));
-        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 50, 30, 10, 10));
-        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 50, 40, 10, 10));
-        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 60, 40, 10, 10));
-        // outskirt zones - where player and npc player spawn
-        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 0, 50, 40, 50));
-        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 40, 60, 40, 40));
-        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 80, 40, 20, 60));
+        // Map is 1000x1000 pixels
+        
+        // extraction zone - where player can extract (larger)
+        map.addZone(ZoneFactory.createZone(ZoneType.EXTRACT_ZONE, 0, 200, 150, 150));
+        
+        // bradley zone - where bradley apc spawns and roams (larger)
+        map.addZone(ZoneFactory.createZone(ZoneType.BRADLEY_ZONE, 450, 50, 400, 250));
+        
+        // loot room zones - where 2x scientist and loot/elite crates spawn (much larger - 150x150)
+        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 350, 300, 150, 150));
+        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 350, 450, 150, 150));
+        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 500, 300, 150, 150));
+        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 500, 450, 150, 150));
+        map.addZone(ZoneFactory.createZone(ZoneType.LOOT_ROOM, 650, 450, 150, 150));
+        
+        // outskirt zones - where player and npc player spawn (larger)
+        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 0, 600, 450, 400));
+        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 450, 650, 400, 350));
+        map.addZone(ZoneFactory.createZone(ZoneType.OUTSKIRTS, 850, 400, 150, 600));
 
         // === WALLS ===
-        // Example loot room walls (you can customize these positions)
-        // Loot room 1 (40, 30, 10, 10) - walls with opening on south side
-        map.addWall(new Wall(40, 30, 10, 1));  // North wall
-        map.addWall(new Wall(40, 30, 1, 10));  // West wall
-        map.addWall(new Wall(49, 30, 1, 10));  // East wall
-        map.addWall(new Wall(40, 39, 3, 1));   // South wall - left part
-        map.addWall(new Wall(40, 39, 4, 1, true));  // South wall - opening (entrance)
-        map.addWall(new Wall(47, 39, 3, 1));   // South wall - right part
+        // Loot room 1 (350, 300, 150, 150) - walls with opening on south side
+        map.addWall(new Wall(350, 300, 150, 10));  // North wall
+        map.addWall(new Wall(350, 300, 10, 150));  // West wall
+        map.addWall(new Wall(490, 300, 10, 150));  // East wall
+        map.addWall(new Wall(350, 440, 50, 10));   // South wall - left part
+        map.addWall(new Wall(400, 440, 50, 10, true));  // South wall - opening (entrance)
+        map.addWall(new Wall(450, 440, 50, 10));   // South wall - right part
 
-        // perimeter walls:
-        map.addWall(new Wall(0, 0, 100, 1));
-        map.addWall(new Wall(0, 0, 1, 100));
-        map.addWall(new Wall(99, 0, 1, 100));
-        map.addWall(new Wall(0, 99, 100, 1));
+        // Perimeter walls
+        map.addWall(new Wall(0, 0, 1000, 10));     // North perimeter
+        map.addWall(new Wall(0, 0, 10, 1000));     // West perimeter
+        map.addWall(new Wall(990, 0, 10, 1000));   // East perimeter
+        map.addWall(new Wall(0, 990, 1000, 10));   // South perimeter
 
         return map;
     }

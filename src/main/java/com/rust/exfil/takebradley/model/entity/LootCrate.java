@@ -17,7 +17,7 @@ public class LootCrate implements Entity {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.isAlive = false;
+        this.isAlive = true;  // Crates start alive
         this.inventory = new Inventory(10, this); // Example size
     }
 
@@ -43,7 +43,7 @@ public class LootCrate implements Entity {
 
     @Override
     public boolean isAlive() {
-        return false;
+        return isAlive;
     }
 
     @Override

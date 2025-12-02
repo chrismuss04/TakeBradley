@@ -1,5 +1,6 @@
 package com.rust.exfil.takebradley.model;
 
+import com.rust.exfil.takebradley.model.entity.BradleyAPC;
 import com.rust.exfil.takebradley.model.entity.Projectile;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
@@ -105,7 +106,9 @@ public class GameWorld {
             
             // check wall collisions for movable entities (except projectiles)
             if (entity instanceof Movable && !(entity instanceof Projectile)) {
-                if (checkWallCollision(entity.getX(), entity.getY())) {
+                // Use entity size for collision (32 pixels for most entities, 64 for Bradley)
+                double entitySize = (entity instanceof BradleyAPC) ? 64 : 32;
+                if (checkWallCollisionWithSize(entity.getX(), entity.getY(), entitySize)) {
                     // revert position if collision detected
                     ((Movable) entity).setPosition(oldX, oldY);
                 }
@@ -150,6 +153,17 @@ public class GameWorld {
         List<Wall> walls = map.getWalls();
         for (Wall wall : walls) {
             if (wall.intersects(x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Check wall collision for entities with size (better collision detection)
+    public boolean checkWallCollisionWithSize(double x, double y, double size) {
+        List<Wall> walls = map.getWalls();
+        for (Wall wall : walls) {
+            if (wall.intersectsEntity(x, y, size)) {
                 return true;
             }
         }
