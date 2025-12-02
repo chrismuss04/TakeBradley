@@ -332,4 +332,31 @@ public class GameWorld {
         
         return nearest;
     }
+    
+    // calculate distance between entities for movement strategies
+    public double calculateDistance(Entity e1, Entity e2) {
+        double dx = e2.getX() - e1.getX();
+        double dy = e2.getY() - e1.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    // get all entities in a radius for movement strategies
+    public List<Entity> getEntitiesInRadius(double x, double y, double radius) {
+        List<Entity> entitiesInRadius = new ArrayList<>();
+        double radiusSquared = radius * radius; // Use squared distance to avoid sqrt
+        
+        for (Entity entity : entities) {
+            if (!entity.isAlive()) continue;
+            
+            double dx = entity.getX() - x;
+            double dy = entity.getY() - y;
+            double distanceSquared = dx * dx + dy * dy;
+            
+            if (distanceSquared <= radiusSquared) {
+                entitiesInRadius.add(entity);
+            }
+        }
+        
+        return entitiesInRadius;
+    }
 }

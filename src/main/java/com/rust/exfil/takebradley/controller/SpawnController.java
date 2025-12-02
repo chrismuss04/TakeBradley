@@ -64,6 +64,7 @@ public class SpawnController {
     // spawn npc player at x,y with randomized loadout
     public NpcPlayer spawnNPC(String name, double x, double y) {
         NpcPlayer npc = (NpcPlayer) EntityFactory.createEntity(EntityType.NPC, name, x, y);
+        npc.setGameWorld(gameWorld);
         
         // randomize ammo type: pistol or rifle
         AmmoType ammoType = random.nextBoolean() ? AmmoType.RIFLE : AmmoType.PISTOL;
@@ -102,6 +103,7 @@ public class SpawnController {
     // spawn a scientist at x,y with randomized loadout
     public Scientist spawnScientist(String name, double x, double y) {
         Scientist scientist = (Scientist) EntityFactory.createEntity(EntityType.SCIENTIST, name, x, y);
+        scientist.setGameWorld(gameWorld);
         
         // randomize weapon: P2 or MP5
         WeaponType weaponType = random.nextBoolean() ? WeaponType.P2 : WeaponType.MP5;
@@ -130,6 +132,7 @@ public class SpawnController {
     // spawn bradley apc at x,y
     public BradleyAPC spawnBradley(String name, double x, double y) {
         BradleyAPC bradley = (BradleyAPC) EntityFactory.createEntity(EntityType.BRADLEY_APC, name, x, y);
+        bradley.setGameWorld(gameWorld);
         
         // equip with RL with nearly infinite ammo
         WeaponItem rocketLauncher = WeaponFactory.create(WeaponType.ROCKET_LAUNCHER);

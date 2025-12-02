@@ -1,0 +1,70 @@
+package com.rust.exfil.takebradley.model.strategy.movement;
+
+import com.rust.exfil.takebradley.model.Direction;
+import com.rust.exfil.takebradley.model.GameWorld;
+import com.rust.exfil.takebradley.model.entity.Player;
+import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
+import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+
+// combat strategy for scientiests - no movement
+public class StationaryCombatStrategy implements MovementStrategy {
+    private static final double ATTACK_RANGE = 100.0;
+    private static final double ALIGNMENT_THRESHOLD = 15.0;
+    
+    @Override
+    public void execute(Entity self, GameWorld world, double deltaTime) {
+        if (!(self instanceof Combatant)) {
+            return;
+        }
+        
+        Combatant combatant = (Combatant) self;
+        Player player = world.getPlayer();
+        
+        if (player != null && player.isAlive()) {
+            double distance = world.calculateDistance(self, player);
+            
+            if (distance <= ATTACK_RANGE) {
+                engageTarget(combatant, self, player);
+            }
+        }
+    }
+    
+    private void engageTarget(Combatant combatant, Entity self, Entity target) {
+        double dx = target.getX() - self.getX();
+        double dy = target.getY() - self.getY();
+        
+        Direction alignedDirection = getAlignedDirection(dx, dy);
+        
+        if (isAlignedForShot(dx, dy, alignedDirection)) {
+            combatant.setFacingDirection(alignedDirection);
+            combatant.fireWeapon();
+        }
+    }
+    
+    private Direction getAlignedDirection(double dx, double dy) {
+        double absDx = Math.abs(dx);
+        double absDy = Math.abs(dy);
+        
+        if (absDx > absDy) {
+            return dx > 0 ? Direction.RIGHT : Direction.LEFT;
+        } else {
+            return dy > 0 ? Direction.DOWN : Direction.UP;
+        }
+    }
+    
+    private boolean isAlignedForShot(double dx, double dy, Direction direction) {
+        double absDx = Math.abs(dx);
+        double absDy = Math.abs(dy);
+        
+        switch (direction) {
+            case LEFT:
+            case RIGHT:
+                return absDy < ALIGNMENT_THRESHOLD;
+            case UP:
+            case DOWN:
+                return absDx < ALIGNMENT_THRESHOLD;
+            default:
+                return false;
+        }
+    }
+}

@@ -1,5 +1,6 @@
 package com.rust.exfil.takebradley.model.entity;
 
+import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.inventory.Inventory;
@@ -7,6 +8,8 @@ import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.ammo.AmmoItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
+import com.rust.exfil.takebradley.model.strategy.movement.MovementStrategy;
+import com.rust.exfil.takebradley.model.strategy.movement.StationaryCombatStrategy;
 import com.rust.exfil.takebradley.model.Direction;
 
 import java.util.UUID;
@@ -22,6 +25,8 @@ public class Scientist implements Entity, Combatant {
     private int selectedSlotIndex = 0;
     private double damageResistance = 0.0;
     private Direction facingDirection = Direction.RIGHT;
+    private GameWorld gameWorld;
+    private final MovementStrategy combatStrategy;
 
     Scientist(String name, double x, double y) {
         this.id = UUID.randomUUID();
@@ -30,6 +35,11 @@ public class Scientist implements Entity, Combatant {
         this.y = y;
         this.health = maxHealth;
         this.inventory = new Inventory(5, this);
+        this.combatStrategy = new StationaryCombatStrategy();
+    }
+    
+    public void setGameWorld(GameWorld gameWorld) {
+        this.gameWorld = gameWorld;
     }
 
     @Override
@@ -148,7 +158,10 @@ public class Scientist implements Entity, Combatant {
 
     @Override
     public void update(double deltaTime) {
-
+        if (!isAlive || gameWorld == null) return;
+        
+        // Execute combat strategy (stationary, only fires when aligned)
+        combatStrategy.execute(this, gameWorld, deltaTime);
     }
 
     public Inventory getInventory() {
