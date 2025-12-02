@@ -14,7 +14,7 @@ import com.rust.exfil.takebradley.model.map.Zone;
  * Pursues player while staying within Bradley zone boundaries
  * Attempts to align for shots in cardinal directions
  */
-public class TankMovementStrategy implements MovementStrategy {
+public class TankMovementStrategy implements CombatStrategy {
     private static final double DETECTION_RADIUS = 300.0;
     private static final double ATTACK_RANGE = 200.0;
     private static final double ALIGNMENT_THRESHOLD = 30.0; // Bradley is less precise
@@ -56,9 +56,18 @@ public class TankMovementStrategy implements MovementStrategy {
             Direction alignedDirection = getAlignedDirection(dx, dy);
             
             if (isAlignedForShot(dx, dy, alignedDirection)) {
-                // update facing direction and fire
+                // update facing direction
                 combatant.setFacingDirection(alignedDirection);
-                combatant.fireWeapon();
+                
+                // check line of sight before firing
+                if (world.hasLineOfSight(selfEntity, target)) {
+                    combatant.fireWeapon();
+                    
+                    // check if we need to reload after firing
+                    if (needsReload(combatant)) {
+                        combatant.reload();
+                    }
+                }
             } else {
                 // move to align with target (within zone)
                 moveToAlignInZone(self, selfEntity, dx, dy, alignedDirection, zone, deltaTime);

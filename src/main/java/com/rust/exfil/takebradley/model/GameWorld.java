@@ -298,12 +298,7 @@ public class GameWorld {
         }
     }
     
-    /**
-     * Find the nearest loot container within interaction range
-     * @param player The player
-     * @param maxDistance Maximum interaction distance
-     * @return The nearest container, or null if none in range
-     */
+    // find the nearest container within a distance
     public Entity findNearestContainer(Player player, double maxDistance) {
         Entity nearest = null;
         double nearestDistance = maxDistance;
@@ -358,5 +353,39 @@ public class GameWorld {
         }
         
         return entitiesInRadius;
+    }
+    
+    // check if there is LoS between two entities
+    public boolean hasLineOfSight(Entity from, Entity to) {
+        double x1 = from.getX();
+        double y1 = from.getY();
+        double x2 = to.getX();
+        double y2 = to.getY();
+        
+        // calculate direction vector
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance == 0) return true;
+        
+        // normalize direction
+        dx /= distance;
+        dy /= distance;
+        
+        // step along the line and check for wall collisions
+        double stepSize = 16.0; // Check every 16 pixels
+        int steps = (int) (distance / stepSize);
+        
+        for (int i = 1; i <= steps; i++) {
+            double checkX = x1 + dx * stepSize * i;
+            double checkY = y1 + dy * stepSize * i;
+            
+            if (checkWallCollision(checkX, checkY)) {
+                return false; // wall blocks line of sight
+            }
+        }
+        
+        return true; // No walls blocking
     }
 }

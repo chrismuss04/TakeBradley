@@ -7,7 +7,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 
 // combat strategy for scientiests - no movement
-public class StationaryCombatStrategy implements MovementStrategy {
+public class StationaryCombatStrategy implements CombatStrategy {
     private static final double ATTACK_RANGE = 100.0;
     private static final double ALIGNMENT_THRESHOLD = 15.0;
     
@@ -24,12 +24,12 @@ public class StationaryCombatStrategy implements MovementStrategy {
             double distance = world.calculateDistance(self, player);
             
             if (distance <= ATTACK_RANGE) {
-                engageTarget(combatant, self, player);
+                engageTarget(combatant, self, player, world);
             }
         }
     }
     
-    private void engageTarget(Combatant combatant, Entity self, Entity target) {
+    private void engageTarget(Combatant combatant, Entity self, Entity target, GameWorld world) {
         double dx = target.getX() - self.getX();
         double dy = target.getY() - self.getY();
         
@@ -37,7 +37,16 @@ public class StationaryCombatStrategy implements MovementStrategy {
         
         if (isAlignedForShot(dx, dy, alignedDirection)) {
             combatant.setFacingDirection(alignedDirection);
-            combatant.fireWeapon();
+            
+            // check line of sight before firing
+            if (world.hasLineOfSight(self, target)) {
+                combatant.fireWeapon();
+                
+                // check if we need to reload after firing
+                if (needsReload(combatant)) {
+                    combatant.reload();
+                }
+            }
         }
     }
     

@@ -10,7 +10,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
 import java.util.Random;
 
 // movement/combat strategy for npc players
-public class AIMovementStrategy implements MovementStrategy {
+public class AIMovementStrategy implements CombatStrategy {
     private static final double DETECTION_RADIUS = 200.0;
     private static final double ATTACK_RANGE = 150.0;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0; // seconds
@@ -70,9 +70,18 @@ public class AIMovementStrategy implements MovementStrategy {
             // check if aligned for shot
             Direction alignedDirection = getAlignedDirection(dx, dy);   
             if (isAlignedForShot(dx, dy, alignedDirection)) {
-                // update facing direction and fire
+                // update facing direction
                 combatant.setFacingDirection(alignedDirection);
-                combatant.fireWeapon();
+                
+                // Check line of sight before firing
+                if (world.hasLineOfSight(selfEntity, target)) {
+                    combatant.fireWeapon();
+                    
+                    // Check if we need to reload after firing
+                    if (needsReload(combatant)) {
+                        combatant.reload();
+                    }
+                }
             } else {
                 // move to align with target
                 moveToAlign(self, dx, dy, distance, alignedDirection, deltaTime);
