@@ -20,6 +20,10 @@ public class GameRenderer {
     private LootUIRenderer lootUIRenderer;
     private com.rust.exfil.takebradley.controller.InputHandler inputHandler;
     
+    // Post-raid overlay state
+    private boolean showingPostRaid = false;
+    private boolean playerExtracted = false; // true = extracted, false = died
+    
     
     public void initialize(Canvas canvas) {
         this.canvas = canvas;
@@ -88,6 +92,40 @@ public class GameRenderer {
         if (lootUIRenderer.isOpen()) {
             lootUIRenderer.renderLootUI(gc);
         }
+        
+        // render post-raid overlay if showing (on top of everything)
+        if (showingPostRaid) {
+            renderPostRaidOverlay(gc);
+        }
+    }
+    
+    private void renderPostRaidOverlay(GraphicsContext gc) {
+        double canvasWidth = canvas.getWidth();
+        double canvasHeight = canvas.getHeight();
+        
+        // semi-transparent background
+        if (playerExtracted) {
+            gc.setFill(javafx.scene.paint.Color.rgb(0, 100, 0, 0.9)); // Dark green
+        } else {
+            gc.setFill(javafx.scene.paint.Color.rgb(100, 0, 0, 0.9)); // Dark red
+        }
+        gc.fillRect(0, 0, canvasWidth, canvasHeight);
+        
+        // title message
+        gc.setFill(javafx.scene.paint.Color.WHITE);
+        gc.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 48));
+        
+        String titleText = playerExtracted ? "EXTRACTED!" : "KILLED IN ACTION";
+        double titleX = canvasWidth / 2 - (titleText.length() * 48 * 0.6) / 2;
+        double titleY = canvasHeight / 2 - 50;
+        gc.fillText(titleText, titleX, titleY);
+        
+        // instruction message
+        gc.setFont(javafx.scene.text.Font.font("Arial", 20));
+        String instructionText = "Press ENTER to return to start screen";
+        double instructionX = canvasWidth / 2 - (instructionText.length() * 20 * 0.6) / 2;
+        double instructionY = canvasHeight / 2 + 50;
+        gc.fillText(instructionText, instructionX, instructionY);
     }
     
     public Camera getCamera() {
@@ -112,5 +150,23 @@ public class GameRenderer {
     
     public void setInputHandler(com.rust.exfil.takebradley.controller.InputHandler inputHandler) {
         this.inputHandler = inputHandler;
+    }
+    
+    public void showExtractionOverlay() {
+        playerExtracted = true;
+        showingPostRaid = true;
+    }
+    
+    public void showDeathOverlay() {
+        playerExtracted = false;
+        showingPostRaid = true;
+    }
+    
+    public void hidePostRaid() {
+        showingPostRaid = false;
+    }
+    
+    public boolean isShowingPostRaid() {
+        return showingPostRaid;
     }
 }

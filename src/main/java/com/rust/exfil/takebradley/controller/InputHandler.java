@@ -7,6 +7,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.loot.LootItem;
 import com.rust.exfil.takebradley.model.loot.gear.GearItem;
 import com.rust.exfil.takebradley.model.loot.weapon.WeaponItem;
+import com.rust.exfil.takebradley.view.GameRenderer;
 import com.rust.exfil.takebradley.view.LootUIRenderer;
 
 import javafx.scene.input.KeyCode;
@@ -21,6 +22,8 @@ public class InputHandler {
     private final ExfilController exfilController;
     private final Set<KeyCode> pressedKeys;
     private LootUIRenderer lootUIRenderer;
+    private GameRenderer gameRenderer;
+    private Runnable onReturnToStart; // Callback to return to start screen
     
     // Extraction state
     private boolean isExtracting = false;
@@ -46,8 +49,29 @@ public class InputHandler {
         this.lootUIRenderer = lootUIRenderer;
     }
     
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
+    }
+    
+    public GameRenderer getGameRenderer() {
+        return gameRenderer;
+    }
+    
+    public void setOnReturnToStart(Runnable callback) {
+        this.onReturnToStart = callback;
+    }
+    
     public void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
+        
+        GameRenderer renderer = getGameRenderer();
+        if (renderer != null && renderer.isShowingPostRaid()) {
+            // enter key to return to start screen
+            if (code == KeyCode.ENTER && onReturnToStart != null) {
+                onReturnToStart.run();
+            }
+            return;
+        }
         
         // Avoid repeat events
         if (pressedKeys.contains(code)) {

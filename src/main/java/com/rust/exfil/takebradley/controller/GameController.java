@@ -3,14 +3,17 @@ package com.rust.exfil.takebradley.controller;
 
 import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.BradleyAPC;
+import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
+import com.rust.exfil.takebradley.model.inventory.Stash;
 import com.rust.exfil.takebradley.systems.event.EntityDeathEvent;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
 import com.rust.exfil.takebradley.systems.event.ExtractionEvent;
 import com.rust.exfil.takebradley.systems.event.GameEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileHitEvent;
+import com.rust.exfil.takebradley.systems.serialization.StashSerializer;
 import com.rust.exfil.takebradley.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 
@@ -22,6 +25,7 @@ public class GameController implements EventObserver {
     private InputHandler inputHandler;
     private AnimationTimer gameLoop;
     private long lastUpdate = 0;
+    private Stash playerStash;
 
     public GameController(GameWorld gameWorld, SpawnController spawnController, ExfilController exfilController) {
         this.gameWorld = gameWorld;
@@ -35,14 +39,16 @@ public class GameController implements EventObserver {
         EventPublisher.getInstance().subscribe(ExtractionEvent.class, this);
     }
     
-    // Set the game renderer (called from Main after initialization)
     public void setGameRenderer(GameRenderer gameRenderer) {
         this.gameRenderer = gameRenderer;
     }
     
-    // Set the input handler (called from Main after initialization)
     public void setInputHandler(InputHandler inputHandler) {
         this.inputHandler = inputHandler;
+    }
+    
+    public void setPlayerStash(Stash stash) {
+        this.playerStash = stash;
     }
 
     // start a 'raid'
@@ -104,8 +110,14 @@ public class GameController implements EventObserver {
             double x = deadEntity.getX();
             double y = deadEntity.getY();
             
+            if (deadEntity instanceof Player) {
+                if (gameRenderer != null) {
+                    gameRenderer.showDeathOverlay();
+                }
+                // game ending is handled on enter keypress in this state
+            }
             // if Bradley died, spawn 3 elite crates at its position
-            if (deadEntity instanceof BradleyAPC) {
+            else if (deadEntity instanceof BradleyAPC) {
                 // spawn 3 elite crates in a small area around Bradley
                 spawnController.spawnEliteCrate("Bradley Loot 1", x - 30, y);
                 spawnController.spawnEliteCrate("Bradley Loot 2", x + 30, y);
@@ -121,11 +133,26 @@ public class GameController implements EventObserver {
                 }
             }
         } else if (event instanceof ExtractionEvent) {
-            // Player successfully extracted - end the raid
-            System.out.println("Player extracted successfully!");
-            // Note: Stash serialization will be handled in stash-serialize spec
-            // For now, just end the raid
-            endRaid();
+            // transfer items from game player's inventory to stash
+            if (playerStash != null) {
+                // player extract method handles item transfer
+                gameWorld.getPlayer().extract();
+                
+                
+                boolean saved = StashSerializer.serialize(playerStash, "saves/player_stash.json");
+                if (saved) {
+                    System.out.println("Stash saved successfully!");
+                } else {
+                    System.err.println("Failed to save stash!");
+                }
+            }
+            
+            // show extraction success overlay
+            if (gameRenderer != null) {
+                gameRenderer.showExtractionOverlay();
+            }
+            
+            // Note: Don't end raid yet - keep rendering with overlay until player presses ENTER
         }
     }
 
