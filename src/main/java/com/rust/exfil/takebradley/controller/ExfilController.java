@@ -3,6 +3,7 @@ package com.rust.exfil.takebradley.controller;
 import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.systems.event.ExtractionEvent;
+import com.rust.exfil.takebradley.systems.serialization.StashSerializer;
 
 public class ExfilController {
     private final GameWorld gameWorld;
@@ -21,9 +22,7 @@ public class ExfilController {
         return gameWorld.isInExtractionZone(player);
     }
 
-    /**
-     * Execute extraction - transfer inventory to stash
-     */
+    // extract from game and save items to stash
     public boolean extract(Player player) {
         if (!canExtract(player)) {
             return false;
@@ -31,11 +30,17 @@ public class ExfilController {
         
         // Transfer inventory to stash
         player.extract();
+        String stashFilePath = "saves/player_stash.json";
+        boolean saved = StashSerializer.serialize(player.getStash(), stashFilePath);
+        
+        if (saved) {
+            System.out.println("Stash saved successfully to " + stashFilePath);
+        } else {
+            System.err.println("Failed to save stash");
+        }
         
         // Publish extraction event
         EventPublisher.getInstance().publish(new ExtractionEvent(player));
-        
-        // Note: Stash serialization handled in stash-serialize spec
         
         return true;
     }
