@@ -19,6 +19,7 @@ public abstract class WeaponItem implements LootItem {
     long reloadDuration; // Reload time in milliseconds
     boolean isFullAuto; // True for full-auto, false for semi-auto
     int roundsPerMinute; // Fire rate for full-auto weapons
+    double bloom; // Weapon spread/inaccuracy in radians (0 = perfectly accurate)
     
     // Reload state tracking
     private boolean isReloading = false;
@@ -125,12 +126,30 @@ public abstract class WeaponItem implements LootItem {
             direction = ((Combatant) user).getFacingDirection();
         }
 
-        // Create projectile at user's position
+        // Apply bloom (weapon spread)
+        double baseDx = direction.getDx();
+        double baseDy = direction.getDy();
+        
+        // Add random spread based on bloom value
+        if (bloom > 0) {
+            // Random angle offset within bloom cone
+            double spreadAngle = (Math.random() - 0.5) * 2 * bloom;
+            
+            // Calculate current angle
+            double currentAngle = Math.atan2(baseDy, baseDx);
+            
+            // Apply spread
+            double newAngle = currentAngle + spreadAngle;
+            baseDx = Math.cos(newAngle);
+            baseDy = Math.sin(newAngle);
+        }
+
+        // Create projectile at user's position with bloom-adjusted direction
         Projectile projectile = new Projectile(
             user.getX(),
             user.getY(),
-            direction.getDx(),
-            direction.getDy(),
+            baseDx,
+            baseDy,
             damage,
             user,
             projectileSpeed

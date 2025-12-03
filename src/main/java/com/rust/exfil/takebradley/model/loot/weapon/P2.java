@@ -13,6 +13,7 @@ public class P2 extends WeaponItem {
         this.reloadDuration = 1500; // 1.5 seconds to reload
         this.isFullAuto = false; // Semi-auto
         this.roundsPerMinute = 0; // Not used for semi-auto
+        this.bloom = 0.10; // Low spread (~6 degrees) - pistol is more accurate
     }
 
     @Override

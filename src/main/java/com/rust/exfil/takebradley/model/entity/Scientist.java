@@ -98,6 +98,11 @@ public class Scientist implements Entity, Combatant {
         if (item instanceof WeaponItem) {
             WeaponItem weapon = (WeaponItem) item;
             
+            // Don't reload if already reloading
+            if (weapon.isReloading()) {
+                return;
+            }
+            
             int ammoSlot = inventory.findAmmo(weapon.getAmmoType());
             if (ammoSlot == -1) {
                 return;
@@ -159,6 +164,12 @@ public class Scientist implements Entity, Combatant {
     @Override
     public void update(double deltaTime) {
         if (!isAlive || gameWorld == null) return;
+        
+        // Update weapon reload state
+        LootItem item = inventory.getItem(selectedSlotIndex);
+        if (item instanceof WeaponItem) {
+            ((WeaponItem) item).update();
+        }
         
         // Execute combat strategy (stationary, only fires when aligned)
         combatStrategy.execute(this, gameWorld, deltaTime);

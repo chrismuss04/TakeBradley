@@ -16,14 +16,19 @@ import com.rust.exfil.takebradley.model.map.Zone;
  */
 public class TankMovementStrategy implements CombatStrategy {
     private static final double DETECTION_RADIUS = 300.0;
-    private static final double ATTACK_RANGE = 200.0;
-    private static final double ALIGNMENT_THRESHOLD = 30.0; // Bradley is less precise
+    private static final double ATTACK_RANGE = 120.0;
+    private static final double ALIGNMENT_THRESHOLD = 40.0;
+    private double timeSinceLastShot = 0.0;
+    private static final double FIRE_COOLDOWN = 0.5; // Half second between shots
     
     @Override
     public void execute(Entity self, GameWorld world, double deltaTime) {
         if (!(self instanceof Movable) || !(self instanceof Combatant)) {
             return;
         }
+        
+        // Update fire cooldown
+        timeSinceLastShot += deltaTime;
         
         Movable movable = (Movable) self;
         Combatant combatant = (Combatant) self;
@@ -52,28 +57,22 @@ public class TankMovementStrategy implements CombatStrategy {
         
         // check if in attack range
         if (distance <= ATTACK_RANGE) {
-            // try to align for a shot
-            Direction alignedDirection = getAlignedDirection(dx, dy);
+            // Face the target and shoot (bloom handles inaccuracy)
+            Direction facingDirection = getAlignedDirection(dx, dy);
+            combatant.setFacingDirection(facingDirection);
             
-            if (isAlignedForShot(dx, dy, alignedDirection)) {
-                // update facing direction
-                combatant.setFacingDirection(alignedDirection);
+            // Check fire cooldown and line of sight before firing
+            if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
+                combatant.fireWeapon();
+                timeSinceLastShot = 0.0; // Reset cooldown
                 
-                // check line of sight before firing
-                if (world.hasLineOfSight(selfEntity, target)) {
-                    combatant.fireWeapon();
-                    
-                    // check if we need to reload after firing
-                    if (needsReload(combatant)) {
-                        combatant.reload();
-                    }
+                // check if we need to reload after firing
+                if (needsReload(combatant)) {
+                    combatant.reload();
                 }
-            } else {
-                // move to align with target (within zone)
-                moveToAlignInZone(self, selfEntity, dx, dy, alignedDirection, zone, deltaTime);
             }
         } else {
-            // move toward target (within zone)
+            // move toward target (within zone) - pursue if out of range
             moveTowardTargetInZone(self, selfEntity, dx, dy, distance, zone, deltaTime);
         }
     }
@@ -121,22 +120,35 @@ public class TankMovementStrategy implements CombatStrategy {
                 break;
         }
         
+        // Update facing direction based on movement
+        if (self instanceof Combatant) {
+            Direction movementDirection = getMovementDirection(moveX, moveY);
+            ((Combatant) self).setFacingDirection(movementDirection);
+        }
+        
         // Check zone boundaries before moving
         if (canMoveInZone(selfEntity, moveX, moveY, self.getSpeed(), zone, deltaTime)) {
-            self.move(moveX * deltaTime, moveY * deltaTime);
+            self.move(moveX, moveY);
         }
     }
     
     private void moveTowardTargetInZone(Movable self, Entity selfEntity, double dx, double dy, 
                                         double distance, BradleyZone zone, double deltaTime) {
+        // Normalize direction
         if (distance > 0) {
             dx /= distance;
             dy /= distance;
         }
         
+        // Update facing direction based on movement
+        if (self instanceof Combatant) {
+            Direction movementDirection = getMovementDirection(dx, dy);
+            ((Combatant) self).setFacingDirection(movementDirection);
+        }
+        
         // Check zone boundaries before moving
         if (canMoveInZone(selfEntity, dx, dy, self.getSpeed(), zone, deltaTime)) {
-            self.move(dx * deltaTime, dy * deltaTime);
+            self.move(dx, dy);
         }
     }
     

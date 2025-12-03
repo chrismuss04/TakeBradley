@@ -9,13 +9,18 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 // combat strategy for scientiests - no movement
 public class StationaryCombatStrategy implements CombatStrategy {
     private static final double ATTACK_RANGE = 100.0;
-    private static final double ALIGNMENT_THRESHOLD = 15.0;
+    private static final double ALIGNMENT_THRESHOLD = 25.0; // how close to aligned before firing
+    private static final double FIRE_COOLDOWN = 0.4; // cooldown between shots
+    private double timeSinceLastShot = 0.0;
     
     @Override
     public void execute(Entity self, GameWorld world, double deltaTime) {
         if (!(self instanceof Combatant)) {
             return;
         }
+        
+        // Update fire cooldown
+        timeSinceLastShot += deltaTime;
         
         Combatant combatant = (Combatant) self;
         Player player = world.getPlayer();
@@ -33,19 +38,18 @@ public class StationaryCombatStrategy implements CombatStrategy {
         double dx = target.getX() - self.getX();
         double dy = target.getY() - self.getY();
         
-        Direction alignedDirection = getAlignedDirection(dx, dy);
+        // Face the target and shoot (bloom handles inaccuracy)
+        Direction facingDirection = getAlignedDirection(dx, dy);
+        combatant.setFacingDirection(facingDirection);
         
-        if (isAlignedForShot(dx, dy, alignedDirection)) {
-            combatant.setFacingDirection(alignedDirection);
+        // Check fire cooldown and line of sight before firing
+        if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(self, target)) {
+            combatant.fireWeapon();
+            timeSinceLastShot = 0.0; // Reset cooldown
             
-            // check line of sight before firing
-            if (world.hasLineOfSight(self, target)) {
-                combatant.fireWeapon();
-                
-                // check if we need to reload after firing
-                if (needsReload(combatant)) {
-                    combatant.reload();
-                }
+            // check if we need to reload after firing
+            if (needsReload(combatant)) {
+                combatant.reload();
             }
         }
     }

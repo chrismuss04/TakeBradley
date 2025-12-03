@@ -2,7 +2,6 @@ package com.rust.exfil.takebradley.model.strategy;
 
 import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.GameWorld;
-import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
@@ -11,15 +10,17 @@ import java.util.Random;
 
 // movement/combat strategy for npc players
 public class AIMovementStrategy implements CombatStrategy {
-    private static final double DETECTION_RADIUS = 200.0;
-    private static final double ATTACK_RANGE = 150.0;
+    private static final double DETECTION_RADIUS = 180.0; // Increased from 130 - spot enemies from further
+    private static final double ATTACK_RANGE = 110.0; // Increased from 90 - engage from further
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0; // seconds
-    private static final double ALIGNMENT_THRESHOLD = 20.0; // pixels - how close to aligned before firing
+    private static final double ALIGNMENT_THRESHOLD = 20.0; // Reduced from 30 - more accurate shots
+    private static final double FIRE_COOLDOWN = 0.3; // Cooldown between shots
     
     private final Random random;
     private double currentDirectionX;
     private double currentDirectionY;
     private double timeSinceDirectionChange;
+    private double timeSinceLastShot = 0.0;
     
     public AIMovementStrategy() {
         this.random = new Random();
@@ -39,17 +40,21 @@ public class AIMovementStrategy implements CombatStrategy {
             return;
         }
         
+        // Update fire cooldown
+        timeSinceLastShot += deltaTime;
+        
         Movable movable = (Movable) self;
         Combatant combatant = (Combatant) self;
-        Player player = world.getPlayer();
         
-        // check if player is detected
-        if (player != null && player.isAlive()) {
-            double distanceToPlayer = world.calculateDistance(self, player);
+        // Find nearest combatant (including player and other NPCs)
+        Entity nearestTarget = findNearestCombatant(self, world);
+        
+        if (nearestTarget != null) {
+            double distanceToTarget = world.calculateDistance(self, nearestTarget);
             
-            if (distanceToPlayer <= DETECTION_RADIUS) {
-                // pursue and engage player
-                pursueAndEngageTarget(movable, combatant, self, player, world, deltaTime);
+            if (distanceToTarget <= DETECTION_RADIUS) {
+                // pursue and engage nearest target
+                pursueAndEngageTarget(movable, combatant, self, nearestTarget, world, deltaTime);
                 return;
             }
         }
@@ -67,32 +72,34 @@ public class AIMovementStrategy implements CombatStrategy {
         
         // check if in attack range
         if (distance <= ATTACK_RANGE) {
-            // check if aligned for shot
-            Direction alignedDirection = getAlignedDirection(dx, dy);   
-            if (isAlignedForShot(dx, dy, alignedDirection)) {
-                // update facing direction
-                combatant.setFacingDirection(alignedDirection);
+            // Face the target and shoot (bloom handles inaccuracy)
+            Direction facingDirection = getAlignedDirection(dx, dy);
+            combatant.setFacingDirection(facingDirection);
+            
+            // Check fire cooldown and line of sight before firing
+            if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
+                combatant.fireWeapon();
+                timeSinceLastShot = 0.0; // Reset cooldown
                 
-                // Check line of sight before firing
-                if (world.hasLineOfSight(selfEntity, target)) {
-                    combatant.fireWeapon();
-                    
-                    // Check if we need to reload after firing
-                    if (needsReload(combatant)) {
-                        combatant.reload();
-                    }
+                // Check if we need to reload after firing
+                if (needsReload(combatant)) {
+                    combatant.reload();
                 }
-            } else {
-                // move to align with target
-                moveToAlign(self, dx, dy, distance, alignedDirection, deltaTime);
             }
         } else {
-            // move toward target
+            // move toward target - pursue if out of range, normalize direction
             if (distance > 0) {
                 dx /= distance;
                 dy /= distance;
             }
-            self.move(dx * deltaTime, dy * deltaTime);
+            
+            // Update facing direction based on movement
+            if (self instanceof Combatant) {
+                Direction movementDirection = getMovementDirection(dx, dy);
+                ((Combatant) self).setFacingDirection(movementDirection);
+            }
+            
+            self.move(dx, dy);
         }
     }
     
@@ -143,7 +150,13 @@ public class AIMovementStrategy implements CombatStrategy {
                 break;
         }
         
-        self.move(moveX * deltaTime, moveY * deltaTime);
+        // Update facing direction based on movement
+        if (self instanceof Combatant) {
+            Direction movementDirection = getMovementDirection(moveX, moveY);
+            ((Combatant) self).setFacingDirection(movementDirection);
+        }
+        
+        self.move(moveX, moveY);
     }
     
     private void roam(Movable self, double deltaTime) {
@@ -155,8 +168,13 @@ public class AIMovementStrategy implements CombatStrategy {
             timeSinceDirectionChange = 0;
         }
         
-        // move in current direction
-        self.move(currentDirectionX * deltaTime, currentDirectionY * deltaTime);
+        // Update facing direction based on roaming movement
+        if (self instanceof Combatant) {
+            Direction movementDirection = getMovementDirection(currentDirectionX, currentDirectionY);
+            ((Combatant) self).setFacingDirection(movementDirection);
+        }
+        
+        self.move(currentDirectionX, currentDirectionY);
     }
     
     private void chooseRandomDirection() {
@@ -164,5 +182,42 @@ public class AIMovementStrategy implements CombatStrategy {
         double angle = random.nextDouble() * 2 * Math.PI;
         currentDirectionX = Math.cos(angle);
         currentDirectionY = Math.sin(angle);
+    }
+    
+    // find the nearest combatant for NPCPlayer to target
+    // NPCs only target Player and other NPCs (not Scientists or Bradley)
+    private Entity findNearestCombatant(Entity self, GameWorld world) {
+        Entity nearestTarget = null;
+        double nearestDistance = DETECTION_RADIUS;
+        
+        // Check all entities in the world
+        for (Entity entity : world.getEntities()) {
+            // Skip self
+            if (entity == self) {
+                continue;
+            }
+            
+            // Skip dead entities
+            if (!entity.isAlive()) {
+                continue;
+            }
+            
+            // Only target Player and NpcPlayer (not Scientist or Bradley)
+            if (!(entity instanceof com.rust.exfil.takebradley.model.entity.Player) && 
+                !(entity instanceof com.rust.exfil.takebradley.model.entity.NpcPlayer)) {
+                continue;
+            }
+            
+            // Calculate distance
+            double distance = world.calculateDistance(self, entity);
+            
+            // Update nearest if this is closer
+            if (distance < nearestDistance) {
+                nearestTarget = entity;
+                nearestDistance = distance;
+            }
+        }
+        
+        return nearestTarget;
     }
 }

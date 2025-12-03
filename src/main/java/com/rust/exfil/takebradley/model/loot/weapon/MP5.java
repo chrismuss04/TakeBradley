@@ -13,6 +13,7 @@ public class MP5 extends WeaponItem{
         this.reloadDuration = 1800; // 1.8 seconds to reload
         this.isFullAuto = true;
         this.roundsPerMinute = 600; // 600 RPM (faster than AK)
+        this.bloom = 0.18; // Higher spread (~10 degrees) - less accurate but faster fire
     }
 
     @Override

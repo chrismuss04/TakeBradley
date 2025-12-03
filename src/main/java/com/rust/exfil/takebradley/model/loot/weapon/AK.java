@@ -13,6 +13,7 @@ public class AK extends WeaponItem{
         this.reloadDuration = 2000; // 2 seconds to reload
         this.isFullAuto = true;
         this.roundsPerMinute = 450; // 450 RPM 
+        this.bloom = 0.12; // Moderate spread (~7 degrees)
     }
 
     @Override

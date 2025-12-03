@@ -13,6 +13,7 @@ public class RocketLauncher extends WeaponItem{
         this.reloadDuration = 3000; // 3 seconds to reload
         this.isFullAuto = false; // Semi-auto (one shot per trigger pull)
         this.roundsPerMinute = 0; // Not used for semi-auto
+        this.bloom = 0.0; // No spread - rockets fly perfectly straight
     }
 
     @Override

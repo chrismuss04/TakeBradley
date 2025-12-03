@@ -1,5 +1,6 @@
 package com.rust.exfil.takebradley.model.strategy;
 
+import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.GameWorld;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
@@ -25,5 +26,18 @@ public interface CombatStrategy {
             return weapon.getCurrentAmmo() == 0;
         }
         return false;
+    }
+    
+    // get movement direction based on dx/dy vector
+    default Direction getMovementDirection(double dx, double dy) {
+        double absDx = Math.abs(dx);
+        double absDy = Math.abs(dy);
+        
+        // Determine primary movement direction
+        if (absDx > absDy) {
+            return dx > 0 ? Direction.RIGHT : Direction.LEFT;
+        } else {
+            return dy > 0 ? Direction.DOWN : Direction.UP;
+        }
     }
 }

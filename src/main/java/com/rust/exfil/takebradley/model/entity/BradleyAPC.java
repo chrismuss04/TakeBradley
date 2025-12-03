@@ -20,7 +20,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private double x, y;
     private int health;
     private final int maxHealth = 1200;
-    private double speed = 2.0;
+    private double speed = 1.5; // Reduced from 2.0 - slower pursuit
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
@@ -93,6 +93,11 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         if (item instanceof WeaponItem) {
             WeaponItem weapon = (WeaponItem) item;
             
+            // Don't reload if already reloading
+            if (weapon.isReloading()) {
+                return;
+            }
+            
             int ammoSlot = inventory.findAmmo(weapon.getAmmoType());
             if (ammoSlot == -1) {
                 return;
@@ -154,6 +159,12 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     @Override
     public void update(double deltaTime) {
         if (!isAlive || gameWorld == null) return;
+        
+        // Update weapon reload state
+        LootItem item = inventory.getItem(0);
+        if (item instanceof WeaponItem) {
+            ((WeaponItem) item).update();
+        }
         
         // Execute movement strategy (handles both movement and combat)
         combatStrategy.execute(this, gameWorld, deltaTime);

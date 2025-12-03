@@ -168,8 +168,8 @@ public class GameWorld {
                     // Apply damage
                     projectile.hit(entity);
                     
-                    // publish hit event for sound effects
-                    if (entity instanceof Combatant) {
+                    // publish hit event for sound effects (only for player's projectiles)
+                    if (entity instanceof Combatant && projectile.getOwner() == player) {
                         EventPublisher.getInstance().publish(new ProjectileHitEvent(projectile, entity));
                     }
                     
@@ -374,15 +374,20 @@ public class GameWorld {
         dy /= distance;
         
         // step along the line and check for wall collisions
-        double stepSize = 16.0; // Check every 16 pixels
+        double stepSize = 32.0; // Check every 32 pixels
         int steps = (int) (distance / stepSize);
         
+        // check if point intersets wall
+        List<Wall> walls = map.getWalls();
         for (int i = 1; i <= steps; i++) {
             double checkX = x1 + dx * stepSize * i;
             double checkY = y1 + dy * stepSize * i;
             
-            if (checkWallCollision(checkX, checkY)) {
-                return false; // wall blocks line of sight
+            // inline wall check to avoid method call overhead
+            for (Wall wall : walls) {
+                if (wall.intersects(checkX, checkY)) {
+                    return false; // solid wall blocks line of sight
+                }
             }
         }
         
