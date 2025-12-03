@@ -7,6 +7,7 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.systems.event.EntityDeathEvent;
 import com.rust.exfil.takebradley.systems.event.EventObserver;
+import com.rust.exfil.takebradley.systems.event.ExtractionEvent;
 import com.rust.exfil.takebradley.systems.event.GameEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
 import com.rust.exfil.takebradley.systems.event.ProjectileHitEvent;
@@ -31,6 +32,7 @@ public class GameController implements EventObserver {
         EventPublisher.getInstance().subscribe(ProjectileCreatedEvent.class, this);
         EventPublisher.getInstance().subscribe(com.rust.exfil.takebradley.systems.event.ProjectileHitEvent.class, this);
         EventPublisher.getInstance().subscribe(com.rust.exfil.takebradley.systems.event.EntityDeathEvent.class, this);
+        EventPublisher.getInstance().subscribe(ExtractionEvent.class, this);
     }
     
     // Set the game renderer (called from Main after initialization)
@@ -118,6 +120,12 @@ public class GameController implements EventObserver {
                     spawnController.spawnLootCrateWithInventory(crateName, x, y, deadEntity.getInventory());
                 }
             }
+        } else if (event instanceof ExtractionEvent) {
+            // Player successfully extracted - end the raid
+            System.out.println("Player extracted successfully!");
+            // Note: Stash serialization will be handled in stash-serialize spec
+            // For now, just end the raid
+            endRaid();
         }
     }
 

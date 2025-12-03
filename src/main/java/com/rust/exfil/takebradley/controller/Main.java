@@ -28,7 +28,11 @@ public class Main extends Application {
         gameRenderer.initialize(canvas);
         
         // set up input handler
-        inputHandler = new InputHandler(gameController.getGameWorld().getPlayer(), gameController.getGameWorld());
+        inputHandler = new InputHandler(
+            gameController.getGameWorld().getPlayer(),
+            gameController.getGameWorld(),
+            gameController.getExfilController()
+        );
         inputHandler.setLootUIRenderer(gameRenderer.getLootUIRenderer());
         
         // create scene
@@ -48,6 +52,7 @@ public class Main extends Application {
         // pass renderer and input handler to game controller and start the game
         gameController.setGameRenderer(gameRenderer);
         gameController.setInputHandler(inputHandler);
+        gameRenderer.setInputHandler(inputHandler); // Pass to renderer for extraction progress
         gameController.startRaid();
     }
     

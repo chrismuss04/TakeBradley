@@ -18,13 +18,28 @@ import java.util.Set;
 public class InputHandler {
     private final Player player;
     private final GameWorld gameWorld;
+    private final ExfilController exfilController;
     private final Set<KeyCode> pressedKeys;
     private LootUIRenderer lootUIRenderer;
     
-    public InputHandler(Player player, GameWorld gameWorld) {
+    // Extraction state
+    private boolean isExtracting = false;
+    private double extractionProgress = 0.0;
+    private static final double EXTRACTION_TIME = 10.0; // 10 seconds
+    
+    public InputHandler(Player player, GameWorld gameWorld, ExfilController exfilController) {
         this.player = player;
         this.gameWorld = gameWorld;
+        this.exfilController = exfilController;
         this.pressedKeys = new HashSet<>();
+    }
+    
+    public boolean isExtracting() {
+        return isExtracting;
+    }
+    
+    public double getExtractionProgress() {
+        return extractionProgress / EXTRACTION_TIME; // Returns 0.0 to 1.0
     }
     
     public void setLootUIRenderer(LootUIRenderer lootUIRenderer) {
@@ -181,6 +196,41 @@ public class InputHandler {
                     player.fireWeapon();
                 }
                 // For semi-auto, firing is handled in handleKeyPressed (one shot per press)
+            }
+        }
+        
+        // Handle extraction progress
+        if (pressedKeys.contains(KeyCode.X)) {
+            // Check if player can extract (in zone and alive)
+            if (exfilController.canExtract(player)) {
+                if (!isExtracting) {
+                    // Start extraction
+                    isExtracting = true;
+                    extractionProgress = 0.0;
+                }
+                
+                // Increment extraction progress
+                extractionProgress += deltaTime;
+                
+                // Check if extraction is complete
+                if (extractionProgress >= EXTRACTION_TIME) {
+                    // Complete extraction
+                    exfilController.extract(player);
+                    isExtracting = false;
+                    extractionProgress = 0.0;
+                }
+            } else {
+                // Cancel extraction if player left zone or died
+                if (isExtracting) {
+                    isExtracting = false;
+                    extractionProgress = 0.0;
+                }
+            }
+        } else {
+            // Cancel extraction if player released X key
+            if (isExtracting) {
+                isExtracting = false;
+                extractionProgress = 0.0;
             }
         }
         

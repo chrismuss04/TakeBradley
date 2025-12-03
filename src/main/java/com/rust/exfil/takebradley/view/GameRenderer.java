@@ -18,6 +18,7 @@ public class GameRenderer {
     private HUDRenderer hudRenderer;
     private AudioManager audioManager;
     private LootUIRenderer lootUIRenderer;
+    private com.rust.exfil.takebradley.controller.InputHandler inputHandler;
     
     
     public void initialize(Canvas canvas) {
@@ -75,7 +76,13 @@ public class GameRenderer {
         gc.restore();
         
         // render hud in fixed screen position
-        hudRenderer.renderHUD(gc, player);
+        if (inputHandler != null && inputHandler.isExtracting()) {
+            // render HUD with extraction progress
+            hudRenderer.renderHUD(gc, player, true, inputHandler.getExtractionProgress());
+        } else {
+            // render normal HUD
+            hudRenderer.renderHUD(gc, player);
+        }
         
         // render loot UI overlay if open (on top of everything)
         if (lootUIRenderer.isOpen()) {
@@ -101,5 +108,9 @@ public class GameRenderer {
     
     public LootUIRenderer getLootUIRenderer() {
         return lootUIRenderer;
+    }
+    
+    public void setInputHandler(com.rust.exfil.takebradley.controller.InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
     }
 }

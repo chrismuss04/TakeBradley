@@ -33,6 +33,47 @@ public class HUDRenderer {
         renderHotbar(gc, player);
     }
     
+    // render all hud elements with extraction progress
+    public void renderHUD(GraphicsContext gc, Player player, boolean isExtracting, double extractionProgress) {
+        renderHealthBar(gc, player.getHealth(), player.getMaxHealth());
+        
+        // render extraction progress bar if extracting
+        if (isExtracting) {
+            renderExtractionBar(gc, extractionProgress);
+        }
+        
+        renderAmmoCounter(gc, player);
+        renderHotbar(gc, player);
+    }
+    
+    // render extraction progress bar below health bar
+    private void renderExtractionBar(GraphicsContext gc, double progress) {
+        double extractionBarX = HEALTH_BAR_X;
+        double extractionBarY = HEALTH_BAR_Y + HEALTH_BAR_HEIGHT + 10; // 10px below health bar
+        double extractionBarWidth = HEALTH_BAR_WIDTH;
+        double extractionBarHeight = 20;
+        
+        // draw background
+        gc.setFill(Color.rgb(50, 50, 50));
+        gc.fillRect(extractionBarX, extractionBarY, extractionBarWidth, extractionBarHeight);
+        
+        // draw progress fill (cyan/blue color for extraction)
+        double fillWidth = extractionBarWidth * progress;
+        gc.setFill(Color.rgb(0, 200, 255)); // Cyan
+        gc.fillRect(extractionBarX, extractionBarY, fillWidth, extractionBarHeight);
+        
+        // draw border
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+        gc.strokeRect(extractionBarX, extractionBarY, extractionBarWidth, extractionBarHeight);
+        
+        // draw extraction text
+        gc.setFill(Color.WHITE);
+        gc.setFont(HUD_FONT);
+        String extractionText = "EXTRACTING... " + String.format("%.1f", progress * 100) + "%";
+        gc.fillText(extractionText, extractionBarX + 5, extractionBarY + 15);
+    }
+    
     // render health bar in top left
     private void renderHealthBar(GraphicsContext gc, int health, int maxHealth) {
         // draw background (empty health bar)
