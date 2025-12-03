@@ -515,3 +515,6 @@ direction TB
 - Gson (or other JSON library for stash serialization)
 
 ---
+
+## User Guide
+[Take Bradley User Guide](TakeBradleyUserGuide.pdf)
