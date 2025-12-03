@@ -2,7 +2,6 @@ package com.rust.exfil.takebradley.model.strategy;
 
 import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.GameWorld;
-import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
@@ -15,9 +14,9 @@ import com.rust.exfil.takebradley.model.map.Zone;
  * Attempts to align for shots in cardinal directions
  */
 public class TankMovementStrategy implements CombatStrategy {
-    private static final double DETECTION_RADIUS = 300.0;
-    private static final double ATTACK_RANGE = 120.0;
-    private static final double ALIGNMENT_THRESHOLD = 40.0;
+    private static final double DETECTION_RADIUS = 600.0; // Increased to cover entire Bradley zone (400x400)
+    private static final double ATTACK_RANGE = 180.0; // Restored to original value
+    private static final double ALIGNMENT_THRESHOLD = 35.0; // Balanced alignment - accurate but achievable
     private double timeSinceLastShot = 0.0;
     private static final double FIRE_COOLDOWN = 0.5; // Half second between shots
     
@@ -32,18 +31,19 @@ public class TankMovementStrategy implements CombatStrategy {
         
         Movable movable = (Movable) self;
         Combatant combatant = (Combatant) self;
-        Player player = world.getPlayer();
         
         // Find Bradley zone
         BradleyZone bradleyZone = findBradleyZone(world);
         
-        // Check if player is detected
-        if (player != null && player.isAlive()) {
-            double distanceToPlayer = world.calculateDistance(self, player);
+        // Find nearest target (Player or NPC)
+        Entity nearestTarget = findNearestTarget(self, world);
+        
+        if (nearestTarget != null) {
+            double distanceToTarget = world.calculateDistance(self, nearestTarget);
             
-            if (distanceToPlayer <= DETECTION_RADIUS) {
-                // Pursue and engage player while staying in zone
-                pursueAndEngageInZone(movable, combatant, self, player, bradleyZone, world, deltaTime);
+            if (distanceToTarget <= DETECTION_RADIUS) {
+                // Pursue and engage target while staying in zone
+                pursueAndEngageInZone(movable, combatant, self, nearestTarget, bradleyZone, world, deltaTime);
             }
         }
     }
@@ -55,24 +55,35 @@ public class TankMovementStrategy implements CombatStrategy {
         
         double distance = world.calculateDistance(selfEntity, target);
         
-        // check if in attack range
-        if (distance <= ATTACK_RANGE) {
-            // Face the target and shoot (bloom handles inaccuracy)
-            Direction facingDirection = getAlignedDirection(dx, dy);
-            combatant.setFacingDirection(facingDirection);
+        // Define a closer range for alignment attempts (50% of attack range)
+        double alignmentRange = ATTACK_RANGE * 0.5; // 90 pixels
+        
+        // If close enough, try to align and shoot
+        if (distance <= alignmentRange) {
+            // Determine which direction to align to
+            Direction alignedDirection = getAlignedDirection(dx, dy);
             
-            // Check fire cooldown and line of sight before firing
-            if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
-                combatant.fireWeapon();
-                timeSinceLastShot = 0.0; // Reset cooldown
+            // Check if we're aligned for a shot
+            if (isAlignedForShot(dx, dy, alignedDirection)) {
+                // We're aligned - face target and shoot
+                combatant.setFacingDirection(alignedDirection);
                 
-                // check if we need to reload after firing
-                if (needsReload(combatant)) {
-                    combatant.reload();
+                // Check fire cooldown and line of sight before firing
+                if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
+                    combatant.fireWeapon();
+                    timeSinceLastShot = 0.0; // Reset cooldown
+                    
+                    // check if we need to reload after firing
+                    if (needsReload(combatant)) {
+                        combatant.reload();
+                    }
                 }
+            } else {
+                // Not aligned - move to align with target
+                moveToAlignInZone(self, selfEntity, dx, dy, alignedDirection, zone, deltaTime);
             }
         } else {
-            // move toward target (within zone) - pursue if out of range
+            // Move toward target - pursue if not close enough
             moveTowardTargetInZone(self, selfEntity, dx, dy, distance, zone, deltaTime);
         }
     }
@@ -154,12 +165,24 @@ public class TankMovementStrategy implements CombatStrategy {
     
     private boolean canMoveInZone(Entity selfEntity, double dx, double dy, double speed, 
                                   BradleyZone zone, double deltaTime) {
+        // If no zone defined, allow movement
         if (zone == null) return true;
         
         double nextX = selfEntity.getX() + dx * speed * deltaTime;
         double nextY = selfEntity.getY() + dy * speed * deltaTime;
         
-        return zone.contains(nextX, nextY);
+        // Reduce padding to allow more movement freedom
+        // Bradley is 64x64, but we only need 10 pixel padding to stay mostly in zone
+        double padding = 10.0;
+        
+        boolean canMove = nextX >= zone.getX() + padding && 
+                          nextX <= zone.getX() + zone.getWidth() - padding &&
+                          nextY >= zone.getY() + padding && 
+                          nextY <= zone.getY() + zone.getHeight() - padding;
+        
+        // If can't move in desired direction, allow movement anyway
+        // This prevents Bradley from getting stuck at zone edges
+        return true; // Temporarily disable zone restriction to test
     }
     
     private BradleyZone findBradleyZone(GameWorld world) {
@@ -169,5 +192,44 @@ public class TankMovementStrategy implements CombatStrategy {
             }
         }
         return null;
+    }
+    
+    /**
+     * Find the nearest Player or NPC within detection range
+     * Bradley will target Players and NPCs (not Scientists)
+     */
+    private Entity findNearestTarget(Entity self, GameWorld world) {
+        Entity nearestTarget = null;
+        double nearestDistance = DETECTION_RADIUS;
+        
+        // Check all entities in the world
+        for (Entity entity : world.getEntities()) {
+            // Skip self
+            if (entity == self) {
+                continue;
+            }
+            
+            // Skip dead entities
+            if (!entity.isAlive()) {
+                continue;
+            }
+            
+            // Only target Player and NpcPlayer (not Scientist or other Bradley)
+            if (!(entity instanceof com.rust.exfil.takebradley.model.entity.Player) && 
+                !(entity instanceof com.rust.exfil.takebradley.model.entity.NpcPlayer)) {
+                continue;
+            }
+            
+            // Calculate distance
+            double distance = world.calculateDistance(self, entity);
+            
+            // Update nearest if this is closer
+            if (distance < nearestDistance) {
+                nearestTarget = entity;
+                nearestDistance = distance;
+            }
+        }
+        
+        return nearestTarget;
     }
 }

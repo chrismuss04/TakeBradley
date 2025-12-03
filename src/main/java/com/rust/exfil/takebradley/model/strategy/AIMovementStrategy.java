@@ -10,10 +10,10 @@ import java.util.Random;
 
 // movement/combat strategy for npc players
 public class AIMovementStrategy implements CombatStrategy {
-    private static final double DETECTION_RADIUS = 180.0; // Increased from 130 - spot enemies from further
-    private static final double ATTACK_RANGE = 110.0; // Increased from 90 - engage from further
+    private static final double DETECTION_RADIUS = 130.0; // Detection range
+    private static final double ATTACK_RANGE = 90.0; // Attack range
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0; // seconds
-    private static final double ALIGNMENT_THRESHOLD = 20.0; // Reduced from 30 - more accurate shots
+    private static final double ALIGNMENT_THRESHOLD = 5.0; // Balanced alignment - accurate but achievable
     private static final double FIRE_COOLDOWN = 0.3; // Cooldown between shots
     
     private final Random random;
@@ -70,24 +70,33 @@ public class AIMovementStrategy implements CombatStrategy {
         double dy = target.getY() - selfEntity.getY();
         double distance = Math.sqrt(dx * dx + dy * dy);
         
-        // check if in attack range
-        if (distance <= ATTACK_RANGE) {
-            // Face the target and shoot (bloom handles inaccuracy)
-            Direction facingDirection = getAlignedDirection(dx, dy);
-            combatant.setFacingDirection(facingDirection);
-            
-            // Check fire cooldown and line of sight before firing
-            if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
-                combatant.fireWeapon();
-                timeSinceLastShot = 0.0; // Reset cooldown
+        // Define a closer range for alignment attempts (70% of attack range)
+        double alignmentRange = ATTACK_RANGE * 0.7;
+        
+        // check if in close range for alignment
+        if (distance <= alignmentRange) {
+            // check if aligned for shot
+            Direction alignedDirection = getAlignedDirection(dx, dy);   
+            if (isAlignedForShot(dx, dy, alignedDirection)) {
+                // update facing direction
+                combatant.setFacingDirection(alignedDirection);
                 
-                // Check if we need to reload after firing
-                if (needsReload(combatant)) {
-                    combatant.reload();
+                // Check fire cooldown and line of sight before firing
+                if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
+                    combatant.fireWeapon();
+                    timeSinceLastShot = 0.0; // Reset cooldown
+                    
+                    // Check if we need to reload after firing
+                    if (needsReload(combatant)) {
+                        combatant.reload();
+                    }
                 }
+            } else {
+                // move to align with target
+                moveToAlign(self, dx, dy, distance, alignedDirection, deltaTime);
             }
         } else {
-            // move toward target - pursue if out of range, normalize direction
+            // move toward target - pursue if too far, normalize direction
             if (distance > 0) {
                 dx /= distance;
                 dy /= distance;
