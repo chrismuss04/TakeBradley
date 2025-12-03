@@ -12,6 +12,7 @@ import com.rust.exfil.takebradley.systems.event.ProjectileCreatedEvent;
 public abstract class WeaponItem implements LootItem {
     String name;
     String description;
+    WeaponType weaponType;
     int magazineSize;
     int damage;
     int currentAmmo;
@@ -63,6 +64,10 @@ public abstract class WeaponItem implements LootItem {
     
     public int getRoundsPerMinute() {
         return roundsPerMinute;
+    }
+    
+    public WeaponType getWeaponType() {
+        return weaponType;
     }
     
     // Public method to update weapon state (should be called every frame)

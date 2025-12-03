@@ -6,6 +6,7 @@ public class AK extends WeaponItem{
     public AK() {
         this.name = "AK";
         this.description = "A powerful assault rifle";
+        this.weaponType = WeaponType.AK;
         this.magazineSize = 30;
         this.damage = 35;
         this.currentAmmo = 30;

@@ -6,6 +6,7 @@ public class P2 extends WeaponItem {
     P2() {
         this.name = "P2";
         this.description = "A semi-automatic pistol";
+        this.weaponType = WeaponType.P2;
         this.magazineSize = 10;
         this.damage = 18;
         this.currentAmmo = 10;

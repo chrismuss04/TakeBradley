@@ -6,6 +6,7 @@ public class MP5 extends WeaponItem{
     MP5() {
         this.name = "MP5";
         this.description = "A compact submachine gun";
+        this.weaponType = WeaponType.MP5;
         this.magazineSize = 30;
         this.damage = 20;
         this.currentAmmo = 30;

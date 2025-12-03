@@ -223,6 +223,10 @@ public class Player implements Entity, Movable, Combatant {
     public Stash getStash() {
         return stash;
     }
+    
+    public void setStash(Stash stash) {
+        this.stash = stash;
+    }
 
     public void equipItem(int slotIndex) {
         if (slotIndex >= 0 && slotIndex < inventory.getSize()) {

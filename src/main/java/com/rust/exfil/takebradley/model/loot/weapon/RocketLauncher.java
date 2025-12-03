@@ -6,6 +6,7 @@ public class RocketLauncher extends WeaponItem{
     public RocketLauncher() {
         this.name = "Rocket Launcher";
         this.description = "A powerful explosive weapon";
+        this.weaponType = WeaponType.ROCKET_LAUNCHER;
         this.magazineSize = 1;
         this.damage = 100;
         this.currentAmmo = 1;
