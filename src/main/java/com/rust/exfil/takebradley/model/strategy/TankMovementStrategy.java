@@ -35,6 +35,12 @@ public class TankMovementStrategy implements CombatStrategy {
         // Find Bradley zone
         BradleyZone bradleyZone = findBradleyZone(world);
         
+        // Check if Bradley is outside its zone and return if so
+        if (bradleyZone != null && !isInZone(self, bradleyZone)) {
+            returnToZone(movable, combatant, self, bradleyZone, deltaTime);
+            return;
+        }
+        
         // Find nearest target (Player or NPC)
         Entity nearestTarget = findNearestTarget(self, world);
         
@@ -171,9 +177,8 @@ public class TankMovementStrategy implements CombatStrategy {
         double nextX = selfEntity.getX() + dx * speed * deltaTime;
         double nextY = selfEntity.getY() + dy * speed * deltaTime;
         
-        // Reduce padding to allow more movement freedom
-        // Bradley is 64x64, but we only need 10 pixel padding to stay mostly in zone
-        double padding = 10.0;
+        // Bradley is 64x64, so 32 pixel padding keeps it fully in zone
+        double padding = 32.0;
         
         boolean canMove = nextX >= zone.getX() + padding && 
                           nextX <= zone.getX() + zone.getWidth() - padding &&
@@ -182,7 +187,7 @@ public class TankMovementStrategy implements CombatStrategy {
         
         // If can't move in desired direction, allow movement anyway
         // This prevents Bradley from getting stuck at zone edges
-        return true; // Temporarily disable zone restriction to test
+        return canMove; // Temporarily disable zone restriction to test
     }
     
     private BradleyZone findBradleyZone(GameWorld world) {
@@ -231,5 +236,48 @@ public class TankMovementStrategy implements CombatStrategy {
         }
         
         return nearestTarget;
+    }
+    
+    /**
+     * Check if Bradley is within its zone (with padding for its size)
+     */
+    private boolean isInZone(Entity self, BradleyZone zone) {
+        if (zone == null) return true;
+        
+        double padding = 32.0; // Same padding as canMoveInZone to prevent flickering
+        double x = self.getX();
+        double y = self.getY();
+        
+        return x >= zone.getX() + padding && 
+               x <= zone.getX() + zone.getWidth() - padding &&
+               y >= zone.getY() + padding && 
+               y <= zone.getY() + zone.getHeight() - padding;
+    }
+    
+    /**
+     * Move Bradley back toward the center of its zone
+     */
+    private void returnToZone(Movable self, Combatant combatant, Entity selfEntity, 
+                              BradleyZone zone, double deltaTime) {
+        // Calculate zone center
+        double zoneCenterX = zone.getX() + zone.getWidth() / 2;
+        double zoneCenterY = zone.getY() + zone.getHeight() / 2;
+        
+        // Calculate direction to zone center
+        double dx = zoneCenterX - selfEntity.getX();
+        double dy = zoneCenterY - selfEntity.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0) {
+            dx /= distance;
+            dy /= distance;
+        }
+        
+        // Update facing direction
+        Direction movementDirection = getMovementDirection(dx, dy);
+        combatant.setFacingDirection(movementDirection);
+        
+        // Move toward zone center
+        self.move(dx, dy);
     }
 }

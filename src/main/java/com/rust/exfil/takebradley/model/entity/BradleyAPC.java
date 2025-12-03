@@ -20,7 +20,7 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private double x, y;
     private int health;
     private final int maxHealth = 1200;
-    private double speed = 1.5; // Reduced from 2.0 - slower pursuit
+    private double speed = 1.2; // Reduced from 1.5 - slower pursuit
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
