@@ -87,9 +87,6 @@ public class SpriteManager {
         wall = loadSprite("/com/rust/exfil/takebradley/sprites/wall.png");
     }
     
-    /**
-     * Load a sprite from resources, return null if not found
-     */
     private Image loadSprite(String path) {
         try {
             Image image = new Image(getClass().getResourceAsStream(path));

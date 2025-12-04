@@ -1,14 +1,11 @@
 package com.rust.exfil.takebradley.view;
 
-/**
- * Camera system that follows the player and manages viewport
- */
 public class Camera {
-    private double x, y;                    // Camera position (top-left of viewport)
-    private final double viewportWidth;     // Canvas width
-    private final double viewportHeight;    // Canvas height
-    private final double mapWidth;          // Total map width
-    private final double mapHeight;         // Total map height
+    private double x, y;                    // camera position (top-left of viewport)
+    private final double viewportWidth;     // canvas width
+    private final double viewportHeight;    // canvas height
+    private final double mapWidth;          // total map width
+    private final double mapHeight;         // total map height
 
     public Camera(double viewportWidth, double viewportHeight, double mapWidth, double mapHeight) {
         this.viewportWidth = viewportWidth;
@@ -19,23 +16,18 @@ public class Camera {
         this.y = 0;
     }
 
-    /**
-     * Center the camera on a position (typically the player)
-     */
+    // center the camera on (x,y) of player
     public void centerOn(double targetX, double targetY) {
-        // Calculate camera position to center on target
+        // calculate camera position to center on target
         x = targetX - (viewportWidth / 2);
         y = targetY - (viewportHeight / 2);
 
-        // Clamp to map bounds
+        // clamp to map bounds
         x = Math.max(0, Math.min(x, mapWidth - viewportWidth));
         y = Math.max(0, Math.min(y, mapHeight - viewportHeight));
     }
 
-    /**
-     * Check if a position is visible in the viewport
-     * Used for culling off-screen entities
-     */
+    // check if entity is within viewport for rendering
     public boolean isVisible(double entityX, double entityY, double entityWidth, double entityHeight) {
         // Check if entity bounds intersect with viewport bounds
         return entityX + entityWidth >= x &&

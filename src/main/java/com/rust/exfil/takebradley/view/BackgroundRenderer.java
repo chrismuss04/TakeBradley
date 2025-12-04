@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 
 public class BackgroundRenderer {
     
-    // Placeholder color scheme
+    // placeholder color scheme
     private static final Color BACKGROUND_COLOR = Color.rgb(60, 60, 65);      // Dark gray (main area)
     private static final Color BRADLEY_ZONE_COLOR = Color.rgb(45, 45, 50);   // Darker gray (Bradley pad)
     private static final Color LOOT_ROOM_COLOR = Color.rgb(100, 100, 100);   // Light gray (buildings)
@@ -36,7 +36,7 @@ public class BackgroundRenderer {
                 case EXTRACT_ZONE:
                     zoneColor = EXTRACTION_ZONE_COLOR;
                 default:
-                    // no color for other zones
+                    // no color for outskirts/other zones
                     break;
             }
             

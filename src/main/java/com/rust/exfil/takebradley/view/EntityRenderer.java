@@ -14,9 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Renders entities with directional sprites and depth sorting
- */
+
 public class EntityRenderer {
     private final Camera camera;
     
@@ -24,78 +22,69 @@ public class EntityRenderer {
         this.camera = camera;
     }
     
-    /**
-     * Render all entities sorted by Y coordinate for depth
-     */
     public void renderEntities(GraphicsContext gc, List<Entity> entities, SpriteManager sprites) {
         
-        // Filter to visible entities and sort by Y
+        // filter to visible entities and sort by Y for overlap
         List<Entity> visibleEntities = entities.stream()
             .filter(e -> e.isAlive())
-            .filter(e -> !(e instanceof Projectile)) // Projectiles rendered separately
+            .filter(e -> !(e instanceof Projectile)) // projectiles rendered separately
             .filter(e -> camera.isVisible(e.getX(), e.getY(), 32, 32))
             .sorted(Comparator.comparingDouble(Entity::getY))
             .collect(Collectors.toList());
         
-        // Render each entity
+        // render each entity
         for (Entity entity : visibleEntities) {
             renderEntity(gc, entity, sprites);
         }
     }
     
-    /**
-     * Render a single entity
-     */
     private void renderEntity(GraphicsContext gc, Entity entity, SpriteManager sprites) {
         Image sprite = getEntitySprite(entity, sprites);
         
         if (sprite != null) {
-            // Scale sprites to reasonable size
+            // scale sprites to reasonable size
             double targetSize;
             boolean cropPlayerSprite = false;
             
             if (entity instanceof BradleyAPC) {
                 targetSize = 64;  // Bradley is 64x64
             } else if (entity instanceof LootCrate || entity instanceof EliteCrate) {
-                targetSize = 16;  // Crates are 16x16 (half size)
+                targetSize = 16;  // crates are 16x16 (half size)
             } else {
-                targetSize = 32;  // Players/NPCs are 32x32
-                cropPlayerSprite = true;  // Crop player sprites to remove padding
+                targetSize = 32;  // players/NPCs are 32x32
+                cropPlayerSprite = true;  // crop player sprites to remove padding from image
             }
             
-            // Draw sprite centered on entity with scaling
+            // draw sprite centered on entity (x,y) with scaling
             double x = entity.getX() - targetSize / 2;
             double y = entity.getY() - targetSize / 2;
             
             if (cropPlayerSprite && (entity instanceof Player || entity instanceof NpcPlayer || entity instanceof Scientist)) {
-                // Crop player sprites - ONLY crop horizontally to remove side padding
                 double sourceWidth = sprite.getWidth();
                 double sourceHeight = sprite.getHeight();
                 double cropPercentX = 0.55;  // Use center 50% horizontally
                 
-                // Only crop horizontally, keep full height
+                // only crop horizontally, keep full height
                 double sourceX = sourceWidth * (1 - cropPercentX) / 2;
                 double sourceY = 0;  // No vertical crop
                 double sourceCropWidth = sourceWidth * cropPercentX;
-                double sourceCropHeight = sourceHeight;  // Full height
+                double sourceCropHeight = sourceHeight;
                 
-                // Keep destination size fixed - don't stretch based on aspect ratio
-                // This keeps sprites the same size as before, just with sides cropped
-                double destWidth = targetSize * 0.7;  // Slightly narrower since we cropped sides
-                double destHeight = targetSize;  // Same height as before
+                double destWidth = targetSize * 0.7;
+                double destHeight = targetSize;
                 
-                // Center the sprite
+                // center the sprite
                 double destX = entity.getX() - destWidth / 2;
                 double destY = entity.getY() - destHeight / 2;
                 
                 gc.drawImage(sprite, 
-                    sourceX, sourceY, sourceCropWidth, sourceCropHeight,  // Source crop area
-                    destX, destY, destWidth, destHeight);  // Destination area (fixed size)
+                    sourceX, sourceY, sourceCropWidth, sourceCropHeight,  // source area
+                    destX, destY, destWidth, destHeight);  // destination area
             } else {
                 gc.drawImage(sprite, x, y, targetSize, targetSize);
             }
         } else {
-            // Draw placeholder if sprite missing
+            // draw placeholder if sprite missing
             drawEntityPlaceholder(gc, entity, sprites);
         }
     }

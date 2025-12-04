@@ -20,7 +20,7 @@ public class GameRenderer {
     private LootUIRenderer lootUIRenderer;
     private com.rust.exfil.takebradley.controller.InputHandler inputHandler;
     
-    // Post-raid overlay state
+    // post-raid overlay state
     private boolean showingPostRaid = false;
     private boolean playerExtracted = false; // true = extracted, false = died
     
@@ -29,11 +29,10 @@ public class GameRenderer {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
         
-        // Initialize camera with viewport and map dimensions
-        // Map size is 1500x1500
+        // initialize camera with viewport and map dimensions (1500x1500)
         this.camera = new Camera(canvas.getWidth(), canvas.getHeight(), 1500, 1500);
         
-        // Initialize sprite manager and load sprites
+        // initialize sprite manager and load sprites
         this.spriteManager = new SpriteManager();
         this.spriteManager.loadSprites();
         
@@ -61,10 +60,10 @@ public class GameRenderer {
         // clear canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         
-        // Update camera to follow player
+        // update camera to follow player
         camera.centerOn(player.getX(), player.getY());
         
-        // Apply camera transformation for world rendering
+        // apply camera transformation for world rendering
         gc.save();
         gc.translate(-camera.getCameraX(), -camera.getCameraY());
         
@@ -76,7 +75,7 @@ public class GameRenderer {
         projectileRenderer.renderProjectiles(gc, world.getEntities(), spriteManager);
         
         
-        // Remove camera transformation
+        // remove camera transformation
         gc.restore();
         
         // render hud in fixed screen position
