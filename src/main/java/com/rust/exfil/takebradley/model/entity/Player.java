@@ -72,10 +72,10 @@ public class Player implements Entity, Movable, Combatant {
     public void die() {
         this.isAlive = false;
         
-        // Unequip gear so it can be looted
+        // unequip gear so it can be looted
         if (inventory.getEquippedGear() != null) {
             GearItem gear = inventory.removeEquippedGear();
-            // Try to add gear back to inventory if there's space
+            // try to add gear back to inventory if there's space
             inventory.addItem(gear);
         }
         
@@ -98,24 +98,22 @@ public class Player implements Entity, Movable, Combatant {
         if (item instanceof WeaponItem) {
             WeaponItem weapon = (WeaponItem) item;
             
-            // Find matching ammo in inventory
+            // find matching ammo in inventory
             int ammoSlot = inventory.findAmmo(weapon.getAmmoType());
             if (ammoSlot == -1) {
-                return; // No ammo available
+                return;
             }
             
-            // Get the ammo item
-            AmmoItem ammo = 
-                (AmmoItem) inventory.getItem(ammoSlot);
+            AmmoItem ammo = (AmmoItem) inventory.getItem(ammoSlot);
             
-            // Reload weapon and get leftover ammo
+            // reload weapon and get leftover ammo
             int leftover = weapon.reload(ammo.getQuantity());
             
-            // Update or remove ammo from inventory
+            // update or remove ammo from inventory
             if (leftover > 0) {
                 ammo.setQuantity(leftover);
             } else {
-                inventory.removeItem(ammoSlot); // All ammo consumed
+                inventory.removeItem(ammoSlot);
             }
         }
     }
@@ -162,22 +160,22 @@ public class Player implements Entity, Movable, Combatant {
 
     @Override
     public void update(double deltaTime) {
-        // Apply movement intent
+        // apply movement intent
         if (moveX != 0 || moveY != 0) {
             move(moveX, moveY);
-            // Reset movement intent after applying
+            // reset movement intent after applying
             moveX = 0;
             moveY = 0;
         }
         
-        // Update equipped weapon (for reload timer)
+        // update equipped weapon
         LootItem equipped = getEquippedItem();
         if (equipped instanceof WeaponItem) {
             ((WeaponItem) equipped).update();
         }
     }
     
-    // Set movement intent (called by InputHandler)
+    // set movement intent
     public void setMovementIntent(double dx, double dy) {
         this.moveX = dx;
         this.moveY = dy;

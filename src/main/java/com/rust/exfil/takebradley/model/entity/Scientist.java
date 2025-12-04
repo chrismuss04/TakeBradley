@@ -75,10 +75,10 @@ public class Scientist implements Entity, Combatant {
     public void die() {
         this.isAlive = false;
         
-        // Unequip gear so it can be looted
+        // unequip gear so it can be looted
         if (inventory.getEquippedGear() != null) {
             GearItem gear = inventory.removeEquippedGear();
-            // Try to add gear back to inventory if there's space
+            // try to add gear back to inventory if there's space
             inventory.addItem(gear);
         }
     }
@@ -98,7 +98,6 @@ public class Scientist implements Entity, Combatant {
         if (item instanceof WeaponItem) {
             WeaponItem weapon = (WeaponItem) item;
             
-            // Don't reload if already reloading
             if (weapon.isReloading()) {
                 return;
             }
@@ -165,13 +164,13 @@ public class Scientist implements Entity, Combatant {
     public void update(double deltaTime) {
         if (!isAlive || gameWorld == null) return;
         
-        // Update weapon reload state
+        // update weapon reload state
         LootItem item = inventory.getItem(selectedSlotIndex);
         if (item instanceof WeaponItem) {
             ((WeaponItem) item).update();
         }
         
-        // Execute combat strategy (stationary, only fires when aligned)
+        // execute combat strategy
         combatStrategy.execute(this, gameWorld, deltaTime);
     }
 

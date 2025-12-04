@@ -18,7 +18,7 @@ public class EliteCrate implements Entity {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.isAlive = true;  // Crates start alive
+        this.isAlive = true; 
         this.inventory = new Inventory(10, this);
         this.isLooted = false;
     }
@@ -67,7 +67,7 @@ public class EliteCrate implements Entity {
     
     public void setLooted(boolean looted) {
         this.isLooted = looted;
-        // Mark crate as dead when looted so it's filtered out from rendering
+        // mark crate as dead when looted so it's filtered out from rendering
         if (looted) {
             this.isAlive = false;
         }

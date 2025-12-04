@@ -21,7 +21,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     private double x, y;
     private int health;
     private final int maxHealth = 100;
-    private double speed = 2.0; // Reduced from 2.5 - much slower than player
+    private double speed = 2.0;
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
@@ -77,7 +77,7 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     public void die() {
         this.isAlive = false;
         
-        // Unequip gear so it can be looted
+        // unequip gear so it can be looted
         if (inventory.getEquippedGear() != null) {
             GearItem gear = inventory.removeEquippedGear();
             // try to add gear back to inventory if there's space
@@ -168,13 +168,13 @@ public class NpcPlayer implements Entity, Movable, Combatant{
     public void update(double deltaTime) {
         if (!isAlive || gameWorld == null) return;
         
-        // Update weapon reload state
+        // update weapon reload state
         LootItem item = inventory.getItem(selectedSlotIndex);
         if (item instanceof WeaponItem) {
             ((WeaponItem) item).update();
         }
         
-        // Execute movement strategy (handles both movement and combat)
+        // execute combat strategy
         combatStrategy.execute(this, gameWorld, deltaTime);
     }
 

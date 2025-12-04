@@ -58,17 +58,15 @@ public class Projectile implements Entity {
     public void update(double deltaTime) {
         if (!isAlive) return;
 
-        // Move projectile based on velocity and speed
+        // move projectile based on velocity and speed
         x += velocityX * speed * deltaTime;
         y += velocityY * speed * deltaTime;
 
-        // Note: Wall collision and entity collision will be checked by GameWorld
-        // GameWorld will call checkCollisions() and handle removal
     }
 
     @Override
     public Inventory getInventory() {
-        return null; // Projectiles don't have inventory
+        return null;
     }
 
     public Entity getOwner() {
@@ -81,24 +79,25 @@ public class Projectile implements Entity {
 
     public void hit(Entity target) {
         if (!isAlive) return;
-        if (target == owner) return; // No friendly fire
+        if (target == owner) return;
 
         if (target instanceof Combatant) {
             ((Combatant) target).takeDamage(damage);
         }
 
-        isAlive = false; // Projectile is destroyed on hit
+        // projectile destroyed on hit
+        isAlive = false;
     }
 
     public void hitWall() {
-        isAlive = false; // Projectile is destroyed when hitting wall
+        isAlive = false;
     }
 
     public boolean isCollidingWith(Entity entity) {
-        if (entity == owner) return false; // Can't collide with owner
+        if (entity == owner) return false;
 
         double distance = calculateDistance(entity.getX(), entity.getY());
-        return distance < 10.0; // Collision radius of 10 units
+        return distance < 10.0;
     }
 
     private double calculateDistance(double targetX, double targetY) {

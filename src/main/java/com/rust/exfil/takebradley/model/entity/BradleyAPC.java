@@ -20,12 +20,12 @@ public class BradleyAPC implements Entity, Movable, Combatant {
     private double x, y;
     private int health;
     private final int maxHealth = 1200;
-    private double speed = 1.2; // Reduced from 1.5 - slower pursuit
+    private double speed = 1.2;
     private boolean isAlive = true;
     private Inventory inventory;
     private int selectedSlotIndex = 0;
     private double damageResistance = 0.0;
-    private Direction facingDirection = com.rust.exfil.takebradley.model.Direction.RIGHT;
+    private Direction facingDirection = Direction.RIGHT;
     private final CombatStrategy combatStrategy;
     private GameWorld gameWorld;
 
@@ -93,7 +93,6 @@ public class BradleyAPC implements Entity, Movable, Combatant {
         if (item instanceof WeaponItem) {
             WeaponItem weapon = (WeaponItem) item;
             
-            // Don't reload if already reloading
             if (weapon.isReloading()) {
                 return;
             }
