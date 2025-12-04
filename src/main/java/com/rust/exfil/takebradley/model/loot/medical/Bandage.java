@@ -16,10 +16,9 @@ public class Bandage extends MedicalItem{
            Combatant combatant = (Combatant) user;
            combatant.heal(15);
            
-           // Decrement quantity
            quantity--;
            
-           // Remove from inventory if quantity reaches 0
+           // remove from inventory if quantity reaches 0
            if (quantity <= 0) {
                int i = combatant.getSelectedSlotIndex();
                user.getInventory().removeItem(i);

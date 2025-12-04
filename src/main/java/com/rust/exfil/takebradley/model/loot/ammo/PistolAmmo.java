@@ -12,6 +12,6 @@ public class PistolAmmo extends AmmoItem{
 
     @Override
     public void use(Entity user) {
-        //do nothing - can't 'use' ammo directly
+        //do nothing
     }
 }

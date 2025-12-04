@@ -13,8 +13,8 @@ public class P2 extends WeaponItem {
         this.projectileSpeed = 600.0;
         this.reloadDuration = 1500; // 1.5 seconds to reload
         this.isFullAuto = false; // Semi-auto
-        this.roundsPerMinute = 0; // Not used for semi-auto
-        this.bloom = 0.10; // Low spread (~6 degrees) - pistol is more accurate
+        this.roundsPerMinute = 0;
+        this.bloom = 0.10; // low bloom
     }
 
     @Override
