@@ -31,10 +31,10 @@ public class GameInitializer {
     // spawn all entites 
     private static void spawnEntities(SpawnController spawnController, GameMap map) {
         
-        // Spawn player at starting position (in outskirts zone)
+        // spawn player at starting position (in outskirts zone)
         spawnController.spawnPlayer(100, 600, null);
         
-        // Spawn NPCs in outskirts (3 per zone)
+        // spawn NPCs in outskirts (3 per zone)
         Zone[] outskirts = map.getZones().stream()
             .filter(z -> z.getZoneType() == ZoneType.OUTSKIRTS)
             .toArray(Zone[]::new);
@@ -50,7 +50,7 @@ public class GameInitializer {
             }
         }
         
-        // Spawn Scientists in loot rooms (2 per room)
+        // spawn Scientists in loot rooms (2 per room)
         Zone[] lootRooms = map.getZones().stream()
             .filter(z -> z.getZoneType() == ZoneType.LOOT_ROOM)
             .toArray(Zone[]::new);
@@ -64,7 +64,7 @@ public class GameInitializer {
             }
         }
         
-        // Spawn Bradley in Bradley zone
+        // spawn Bradley in Bradley zone
         Zone bradleyZone = map.getZones().stream()
             .filter(z -> z.getZoneType() == ZoneType.BRADLEY_ZONE)
             .findFirst()
@@ -75,13 +75,12 @@ public class GameInitializer {
             spawnController.spawnBradley("Bradley APC", pos[0], pos[1]);
         }
         
-        // Spawn 3 crates per loot room (10% chance of elite)
+        // spawn 3 crates per loot room (10% chance of elite)
         int crateCount = 1;
         for (Zone lootRoom : lootRooms) {
             for (int j = 0; j < 3; j++) {
                 double[] pos = getRandomPositionInZoneWithoutOverlap(lootRoom, gameWorld, 16, 50);
                 
-                // 10% chance for elite crate
                 if (random.nextDouble() < 0.10) {
                     spawnController.spawnEliteCrate("Elite Crate " + crateCount, pos[0], pos[1]);
                 } else {
@@ -92,16 +91,16 @@ public class GameInitializer {
         }
     }
     
-    // Get a random position in a zone that doesn't overlap with existing entities
+    // get a random position in a zone that doesn't overlap with existing entities
     private static double[] getRandomPositionInZoneWithoutOverlap(Zone zone, GameWorld gameWorld, double entitySize, int maxAttempts) {
         double padding = 20;
-        double minDistance = entitySize + 10; // Minimum distance between entities
+        double minDistance = entitySize + 10;
         
         for (int attempt = 0; attempt < maxAttempts; attempt++) {
             double x = zone.getX() + padding + random.nextDouble() * (zone.getWidth() - 2 * padding);
             double y = zone.getY() + padding + random.nextDouble() * (zone.getHeight() - 2 * padding);
             
-            // Check if this position overlaps with any existing entity
+            // check if this position overlaps with any existing entity
             boolean overlaps = false;
             for (com.rust.exfil.takebradley.model.entity.interfaces.Entity entity : gameWorld.getEntities()) {
                 double dx = entity.getX() - x;
@@ -119,7 +118,7 @@ public class GameInitializer {
             }
         }
         
-        // If we couldn't find a non-overlapping position after maxAttempts, return anyway
+        // ok with spawn collisions after max attempts
         double x = zone.getX() + padding + random.nextDouble() * (zone.getWidth() - 2 * padding);
         double y = zone.getY() + padding + random.nextDouble() * (zone.getHeight() - 2 * padding);
         return new double[]{x, y};

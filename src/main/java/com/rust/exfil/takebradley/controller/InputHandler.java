@@ -23,12 +23,12 @@ public class InputHandler {
     private final Set<KeyCode> pressedKeys;
     private LootUIRenderer lootUIRenderer;
     private GameRenderer gameRenderer;
-    private Runnable onReturnToStart; // Callback to return to start screen
+    private Runnable onReturnToStart; 
     
-    // Extraction state
+    // extraction state
     private boolean isExtracting = false;
     private double extractionProgress = 0.0;
-    private static final double EXTRACTION_TIME = 10.0; // 10 seconds
+    private static final double EXTRACTION_TIME = 10.0;
     
     public InputHandler(Player player, GameWorld gameWorld, ExfilController exfilController) {
         this.player = player;
@@ -42,7 +42,7 @@ public class InputHandler {
     }
     
     public double getExtractionProgress() {
-        return extractionProgress / EXTRACTION_TIME; // Returns 0.0 to 1.0
+        return extractionProgress / EXTRACTION_TIME;
     }
     
     public void setLootUIRenderer(LootUIRenderer lootUIRenderer) {
@@ -73,17 +73,17 @@ public class InputHandler {
             return;
         }
         
-        // Avoid repeat events
+        // avoid repeat events
         if (pressedKeys.contains(code)) {
             return;
         }
         
         pressedKeys.add(code);
         
-        // Handle loot UI input if open
+        // handle loot UI input if open
         if (lootUIRenderer != null && lootUIRenderer.isOpen()) {
             handleLootUIInput(code);
-            return; // Don't process game input while loot UI is open
+            return; // don't process game input while loot UI is open
         }
         
         // Inventory slot selection - 1-5
@@ -109,69 +109,61 @@ public class InputHandler {
             player.equipItem(9);
         }
 
-        
-        // Combat - Space to shoot
+        // combat controls
+        // space to shoot
         else if (code == KeyCode.SPACE) {
             if(player.getEquippedItem() instanceof WeaponItem) {
                 player.fireWeapon();
             }
         }
         
-        // Reload - R
+        // r to reload
         else if (code == KeyCode.R) {
             if(player.getEquippedItem() instanceof WeaponItem) {
                 player.reload();
             }
         }
         
-        // Use item - E (for medical items and gear)
+        // e to use med item or equip gear
         else if (code == KeyCode.E) {
             LootItem equippedItem = player.getEquippedItem();
             if (equippedItem != null) {
-                // Special handling for gear to avoid duplication bug
                 if (equippedItem instanceof GearItem) {
                     player.getInventory().equipGearFromSlot(player.getSelectedSlotIndex());
                 } else {
-                    // For other items (medical, etc.), use normally
+                    // for other items use normally
                     equippedItem.use(player);
                 }
             }
         }
         
-        // loot container - F (open loot UI)
+        // f to open loot container
         else if (code == KeyCode.F) {
             // find nearest container within interaction range (50 pixels)
             Entity nearestContainer = 
                 gameWorld.findNearestContainer(player, 50.0);
             
             if (nearestContainer != null && lootUIRenderer != null) {
-                // Open loot UI instead of auto-looting
-                lootUIRenderer.openLootUI(nearestContainer, 800, 600); // TODO: Get canvas size dynamically
+                // open loot UI instead of auto-looting
+                lootUIRenderer.openLootUI(nearestContainer, 800, 600);
             }
         }
     }
     
-    /**
-     * Handle input when loot UI is open
-     */
     private void handleLootUIInput(KeyCode code) {
         if (code == KeyCode.ESCAPE) {
-            // Close loot UI
+            // close loot UI
             lootUIRenderer.closeLootUI();
         } else if (code == KeyCode.W || code == KeyCode.UP) {
-            // Select item above
             lootUIRenderer.selectUp();
         } else if (code == KeyCode.S || code == KeyCode.DOWN) {
-            // Select item below
             lootUIRenderer.selectDown();
         } else if (code == KeyCode.A || code == KeyCode.LEFT) {
-            // Select item to the left
             lootUIRenderer.selectLeft();
         } else if (code == KeyCode.D || code == KeyCode.RIGHT) {
-            // Select item to the right
             lootUIRenderer.selectRight();
         } else if (code == KeyCode.E) {
-            // Take selected item
+            // take selected item
             Entity container = lootUIRenderer.getCurrentContainer();
             int slotIndex = lootUIRenderer.getSelectedSlotIndex();
             
@@ -179,7 +171,7 @@ public class InputHandler {
                 boolean success = gameWorld.lootItem(player, container, slotIndex);
                 
                 if (success) {
-                    // Move to next item or close if empty
+                    // move to next item or close if empty
                     if (container.getInventory().isEmpty()) {
                         lootUIRenderer.closeLootUI();
                     } else {
@@ -188,7 +180,7 @@ public class InputHandler {
                 }
             }
         } else if (code == KeyCode.F) {
-            // Take all items
+            // take all items
             Entity container = lootUIRenderer.getCurrentContainer();
             if (container != null) {
                 gameWorld.lootContainer(player, container);
@@ -202,64 +194,58 @@ public class InputHandler {
         pressedKeys.remove(code);
     }
     
-    // Called each frame to set movement intent based on pressed keys
+    // set movement intent based on keypress
     public void update(double deltaTime) {
-        // Don't process movement if loot UI is open
         if (lootUIRenderer != null && lootUIRenderer.isOpen()) {
             player.setMovementIntent(0, 0);
             return;
         }
         
-        // Handle full-auto firing if space is held down
+        // handle full-auto firing if space is held down
         if (pressedKeys.contains(KeyCode.SPACE)) {
             LootItem equippedItem = player.getEquippedItem();
             if (equippedItem instanceof WeaponItem) {
                 WeaponItem weapon = (WeaponItem) equippedItem;
-                // For full-auto weapons, fire continuously while space is held
                 if (weapon.isFullAuto()) {
                     player.fireWeapon();
                 }
-                // For semi-auto, firing is handled in handleKeyPressed (one shot per press)
             }
         }
         
-        // Handle extraction progress
+        // handle extraction progress
         if (pressedKeys.contains(KeyCode.X)) {
-            // Check if player can extract (in zone and alive)
+            // check if player can extract
             if (exfilController.canExtract(player)) {
                 if (!isExtracting) {
-                    // Start extraction
                     isExtracting = true;
                     extractionProgress = 0.0;
                 }
                 
-                // Increment extraction progress
+                // increment extraction progress
                 extractionProgress += deltaTime;
                 
-                // Check if extraction is complete
+                // check if extraction is complete
                 if (extractionProgress >= EXTRACTION_TIME) {
-                    // Complete extraction
                     exfilController.extract(player);
                     isExtracting = false;
                     extractionProgress = 0.0;
                 }
             } else {
-                // Cancel extraction if player left zone or died
+                // cancel extraction if player left zone or died
                 if (isExtracting) {
                     isExtracting = false;
                     extractionProgress = 0.0;
                 }
             }
         } else {
-            // Cancel extraction if player released X key
+            // cancel extraction if player released x d
             if (isExtracting) {
                 isExtracting = false;
                 extractionProgress = 0.0;
             }
         }
         
-        // Set movement intent based on currently pressed keys
-        // The actual movement will be applied in Player.update() which is called by GameWorld.updateAll()
+        // set movement intent based on currently pressed keys
         double dx = 0;
         double dy = 0;
         
@@ -279,7 +265,7 @@ public class InputHandler {
             dx = 1;
         }
         
-        // Set the movement intent - actual movement happens in Player.update()
+        // set the movement intent for use in Player.update()
         player.setMovementIntent(dx, dy);
     }
 }

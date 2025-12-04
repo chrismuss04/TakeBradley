@@ -123,7 +123,7 @@ public class GameController implements EventObserver {
                 spawnController.spawnEliteCrate("Bradley Loot 2", x + 30, y);
                 spawnController.spawnEliteCrate("Bradley Loot 3", x, y + 30);
             } 
-            // For other combatants (NPCs, Scientists, Players), drop their inventory as a loot crate
+            // for other combatants drop their inventory in a loot crate
             else if (deadEntity instanceof Combatant) {
                 // check if entity has inventory with items
                 if (deadEntity.getInventory() != null && !deadEntity.getInventory().isEmpty()) {
@@ -151,12 +151,9 @@ public class GameController implements EventObserver {
             if (gameRenderer != null) {
                 gameRenderer.showExtractionOverlay();
             }
-            
-            // Note: Don't end raid yet - keep rendering with overlay until player presses ENTER
         }
     }
 
-    // Getters for controllers
     public GameWorld getGameWorld() {
         return gameWorld;
     }

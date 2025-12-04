@@ -69,6 +69,6 @@ public class StartScreenInputHandler {
     }
     
     public void handleKeyReleased(KeyEvent event) {
-        // No key release handling needed for start screen
+        // no key release handling needed for start screen
     }
 }

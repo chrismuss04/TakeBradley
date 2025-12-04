@@ -144,29 +144,26 @@ public class SpawnController {
             int itemType = random.nextInt(4); // 0=weapon, 1=ammo, 2=medical, 3=gear
             
             switch (itemType) {
-                case 0: // Weapon
+                case 0:
                     WeaponType[] weapons = {WeaponType.P2, WeaponType.MP5};
                     crate.getInventory().addItem(
                         WeaponFactory.create(weapons[random.nextInt(weapons.length)])
                     );
                     break;
                     
-                case 1: // Ammo
+                case 1:
                     AmmoType[] ammoTypes = {AmmoType.PISTOL, AmmoType.RIFLE};
                     AmmoItem ammo = AmmoFactory.create(ammoTypes[random.nextInt(ammoTypes.length)]);
                     ammo.setQuantity(30 + random.nextInt(31)); // 30-60 rounds
                     crate.getInventory().addItem(ammo);
                     break;
                     
-                case 2: // Medical
-                    MedType[] medTypes = {
-                        MedType.BANDAGE,
-                        MedType.SYRINGE
-                    };
+                case 2:
+                    MedType[] medTypes = {MedType.BANDAGE, MedType.SYRINGE};
                     crate.getInventory().addItem(MedFactory.create(medTypes[random.nextInt(medTypes.length)]));
                     break;
                     
-                case 3: // Gear
+                case 3:
                     GearType[] gearTypes = {GearType.HAZMAT, GearType.WOLFHEAD};
                     crate.getInventory().addItem(GearFactory.create(gearTypes[random.nextInt(gearTypes.length)]));
                     break;
@@ -187,12 +184,12 @@ public class SpawnController {
             int itemType = random.nextInt(4); // 0=weapon, 1=ammo, 2=medical, 3=gear
             
             switch (itemType) {
-                case 0: // High-tier weapons
+                case 0: 
                     WeaponType[] weapons = {WeaponType.AK, WeaponType.ROCKET_LAUNCHER};
                     eliteCrate.getInventory().addItem(WeaponFactory.create(weapons[random.nextInt(weapons.length)]));
                     break;
                     
-                case 1: // Large ammo stacks
+                case 1:
                     AmmoType[] ammoTypes = {AmmoType.RIFLE, AmmoType.ROCKET};
                     AmmoType type = ammoTypes[random.nextInt(ammoTypes.length)];
                     AmmoItem ammo = AmmoFactory.create(type);
@@ -206,11 +203,11 @@ public class SpawnController {
                     eliteCrate.getInventory().addItem(ammo);
                     break;
                     
-                case 2: // Medical (syringes preferred)
+                case 2:
                     eliteCrate.getInventory().addItem(MedFactory.create(MedType.SYRINGE));
                     break;
                     
-                case 3: // High-tier gear
+                case 3:
                     GearType[] gearTypes = {GearType.HEAVYPOT, GearType.ROADSIGN};
                     eliteCrate.getInventory().addItem(GearFactory.create(gearTypes[random.nextInt(gearTypes.length)]));
                     break;

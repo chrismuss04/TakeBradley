@@ -12,9 +12,7 @@ public class ExfilController {
         this.gameWorld = gameWorld;
     }
 
-    /**
-     * Check if player can extract (is in extraction zone and alive)
-     */
+    // check if player is in extraction zone for extract logic
     public boolean canExtract(Player player) {
         if (!player.isAlive()) {
             return false;
@@ -28,7 +26,7 @@ public class ExfilController {
             return false;
         }
         
-        // Transfer inventory to stash
+        // transfer inventory to stash
         player.extract();
         String stashFilePath = "saves/player_stash.json";
         boolean saved = StashSerializer.serialize(player.getStash(), stashFilePath);
@@ -39,7 +37,7 @@ public class ExfilController {
             System.err.println("Failed to save stash");
         }
         
-        // Publish extraction event
+        // publish extraction event
         EventPublisher.getInstance().publish(new ExtractionEvent(player));
         
         return true;
