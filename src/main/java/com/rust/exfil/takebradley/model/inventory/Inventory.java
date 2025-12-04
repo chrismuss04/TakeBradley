@@ -51,7 +51,7 @@ public class Inventory {
         return equippedGear;
     }
 
-    //add to first available slot, if all full return false
+    // add to first available slot, if all full return false
     public boolean addItem(LootItem item) {
         for (InventorySlot slot : slots) {
             if (slot.isEmpty()) {
@@ -97,9 +97,9 @@ public class Inventory {
         for (int i = 0; i < slots.size(); i++) {
             LootItem item = slots.get(i).getItem();
             if (item instanceof AmmoItem) {
-                com.rust.exfil.takebradley.model.loot.ammo.AmmoItem ammo = (AmmoItem) item;
+                AmmoItem ammo = (AmmoItem) item;
                 if (ammo.getAmmoType() == ammoType) {
-                    return i; // Return slot index
+                    return i; // return slot index
                 }
             }
         }
@@ -111,7 +111,7 @@ public class Inventory {
         for (int i = 0; i < slots.size(); i++) {
             LootItem item = slots.get(i).getItem();
             if (item instanceof GearItem) {
-                // Remove from inventory before equipping to avoid duplication
+                // remove from inventory before equipping to avoid duplication
                 removeItem(i);
                 setEquippedGear((GearItem) item);     
                 return;
@@ -119,12 +119,6 @@ public class Inventory {
         }
     }
     
-    /**
-     * Equip gear from a specific inventory slot
-     * Removes the gear from the slot before equipping to avoid duplication
-     * @param slotIndex The inventory slot containing the gear
-     * @return true if gear was equipped, false if slot is empty or doesn't contain gear
-     */
     public boolean equipGearFromSlot(int slotIndex) {
         if (!isValidIndex(slotIndex)) {
             return false;
@@ -132,7 +126,7 @@ public class Inventory {
         
         LootItem item = slots.get(slotIndex).getItem();
         if (item instanceof GearItem) {
-            // Remove from inventory before equipping to avoid duplication
+            // remove from inventory before equipping to avoid duplication
             removeItem(slotIndex);
             setEquippedGear((GearItem) item);
             return true;
