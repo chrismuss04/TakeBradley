@@ -5,5 +5,4 @@ public class BradleyZone extends Zone{
     BradleyZone(double x, double y, double width, double height) {
         super(ZoneType.BRADLEY_ZONE, x, y, width, height);
     }
-    // no additional logic needed? maybe bradley spawn logic but prob not here
 }

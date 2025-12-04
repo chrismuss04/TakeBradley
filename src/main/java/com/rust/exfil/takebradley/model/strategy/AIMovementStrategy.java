@@ -2,6 +2,8 @@ package com.rust.exfil.takebradley.model.strategy;
 
 import com.rust.exfil.takebradley.model.Direction;
 import com.rust.exfil.takebradley.model.GameWorld;
+import com.rust.exfil.takebradley.model.entity.NpcPlayer;
+import com.rust.exfil.takebradley.model.entity.Player;
 import com.rust.exfil.takebradley.model.entity.interfaces.Combatant;
 import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 import com.rust.exfil.takebradley.model.entity.interfaces.Movable;
@@ -10,11 +12,11 @@ import java.util.Random;
 
 // movement/combat strategy for npc players
 public class AIMovementStrategy implements CombatStrategy {
-    private static final double DETECTION_RADIUS = 130.0; // Detection range
-    private static final double ATTACK_RANGE = 90.0; // Attack range
+    private static final double DETECTION_RADIUS = 130.0;
+    private static final double ATTACK_RANGE = 90.0;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0; // seconds
-    private static final double ALIGNMENT_THRESHOLD = 5.0; // Balanced alignment - accurate but achievable
-    private static final double FIRE_COOLDOWN = 0.3; // Cooldown between shots
+    private static final double ALIGNMENT_THRESHOLD = 5.0; // pixel alignment before entity is 'aligned' with target
+    private static final double FIRE_COOLDOWN = 0.3; // cooldown between shots
     
     private final Random random;
     private double currentDirectionX;
@@ -40,13 +42,13 @@ public class AIMovementStrategy implements CombatStrategy {
             return;
         }
         
-        // Update fire cooldown
+        // update fire cooldown
         timeSinceLastShot += deltaTime;
         
         Movable movable = (Movable) self;
         Combatant combatant = (Combatant) self;
         
-        // Find nearest combatant (including player and other NPCs)
+        // find nearest combatant
         Entity nearestTarget = findNearestCombatant(self, world);
         
         if (nearestTarget != null) {
@@ -70,7 +72,7 @@ public class AIMovementStrategy implements CombatStrategy {
         double dy = target.getY() - selfEntity.getY();
         double distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Define a closer range for alignment attempts (70% of attack range)
+        // define a closer range for alignment attempts (70% of attack range)
         double alignmentRange = ATTACK_RANGE * 0.7;
         
         // check if in close range for alignment
@@ -81,12 +83,12 @@ public class AIMovementStrategy implements CombatStrategy {
                 // update facing direction
                 combatant.setFacingDirection(alignedDirection);
                 
-                // Check fire cooldown and line of sight before firing
+                // check fire cooldown and line of sight before firing
                 if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(selfEntity, target)) {
                     combatant.fireWeapon();
-                    timeSinceLastShot = 0.0; // Reset cooldown
+                    timeSinceLastShot = 0.0;
                     
-                    // Check if we need to reload after firing
+                    // check if we need to reload after firing
                     if (needsReload(combatant)) {
                         combatant.reload();
                     }
@@ -102,7 +104,7 @@ public class AIMovementStrategy implements CombatStrategy {
                 dy /= distance;
             }
             
-            // Update facing direction based on movement
+            // update facing direction based on movement
             if (self instanceof Combatant) {
                 Direction movementDirection = getMovementDirection(dx, dy);
                 ((Combatant) self).setFacingDirection(movementDirection);
@@ -116,7 +118,7 @@ public class AIMovementStrategy implements CombatStrategy {
         double absDx = Math.abs(dx);
         double absDy = Math.abs(dy);
         
-        // Determine which cardinal direction is closest
+        // determine which cardinal direction is closest
         if (absDx > absDy) {
             return dx > 0 ? Direction.RIGHT : Direction.LEFT;
         } else {
@@ -159,7 +161,7 @@ public class AIMovementStrategy implements CombatStrategy {
                 break;
         }
         
-        // Update facing direction based on movement
+        // update facing direction based on movement
         if (self instanceof Combatant) {
             Direction movementDirection = getMovementDirection(moveX, moveY);
             ((Combatant) self).setFacingDirection(movementDirection);
@@ -177,7 +179,7 @@ public class AIMovementStrategy implements CombatStrategy {
             timeSinceDirectionChange = 0;
         }
         
-        // Update facing direction based on roaming movement
+        // update facing direction based on movement
         if (self instanceof Combatant) {
             Direction movementDirection = getMovementDirection(currentDirectionX, currentDirectionY);
             ((Combatant) self).setFacingDirection(movementDirection);
@@ -194,33 +196,32 @@ public class AIMovementStrategy implements CombatStrategy {
     }
     
     // find the nearest combatant for NPCPlayer to target
-    // NPCs only target Player and other NPCs (not Scientists or Bradley)
+    // NPCs only target Player and other NPCs
     private Entity findNearestCombatant(Entity self, GameWorld world) {
         Entity nearestTarget = null;
         double nearestDistance = DETECTION_RADIUS;
         
-        // Check all entities in the world
+        // check all entities in the world
         for (Entity entity : world.getEntities()) {
             // Skip self
             if (entity == self) {
                 continue;
             }
             
-            // Skip dead entities
+            // skip dead entities
             if (!entity.isAlive()) {
                 continue;
             }
             
-            // Only target Player and NpcPlayer (not Scientist or Bradley)
-            if (!(entity instanceof com.rust.exfil.takebradley.model.entity.Player) && 
-                !(entity instanceof com.rust.exfil.takebradley.model.entity.NpcPlayer)) {
+            if (!(entity instanceof Player) && 
+                !(entity instanceof NpcPlayer)) {
                 continue;
             }
             
-            // Calculate distance
+            // calculate distance
             double distance = world.calculateDistance(self, entity);
             
-            // Update nearest if this is closer
+            // update nearest if this is closer
             if (distance < nearestDistance) {
                 nearestTarget = entity;
                 nearestDistance = distance;

@@ -18,7 +18,7 @@ public class WallRenderer {
                 // render opening as dashed/semi-transparent
                 renderOpening(gc, wall);
             } else {
-                // Render solid wall
+                // render solid wall
                 renderSolidWall(gc, wall);
             }
         }

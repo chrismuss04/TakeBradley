@@ -9,7 +9,6 @@ import com.rust.exfil.takebradley.model.entity.interfaces.Entity;
 // combat strategy for scientiests - no movement
 public class StationaryCombatStrategy implements CombatStrategy {
     private static final double ATTACK_RANGE = 100.0;
-    private static final double ALIGNMENT_THRESHOLD = 25.0; // how close to aligned before firing
     private static final double FIRE_COOLDOWN = 0.4; // cooldown between shots
     private double timeSinceLastShot = 0.0;
     
@@ -19,7 +18,7 @@ public class StationaryCombatStrategy implements CombatStrategy {
             return;
         }
         
-        // Update fire cooldown
+        // update fire cooldown
         timeSinceLastShot += deltaTime;
         
         Combatant combatant = (Combatant) self;
@@ -38,14 +37,14 @@ public class StationaryCombatStrategy implements CombatStrategy {
         double dx = target.getX() - self.getX();
         double dy = target.getY() - self.getY();
         
-        // Face the target and shoot (bloom handles inaccuracy)
+        // face the target and shoot
         Direction facingDirection = getAlignedDirection(dx, dy);
         combatant.setFacingDirection(facingDirection);
         
-        // Check fire cooldown and line of sight before firing
+        // check fire cooldown and line of sight before firing
         if (timeSinceLastShot >= FIRE_COOLDOWN && world.hasLineOfSight(self, target)) {
             combatant.fireWeapon();
-            timeSinceLastShot = 0.0; // Reset cooldown
+            timeSinceLastShot = 0.0; 
             
             // check if we need to reload after firing
             if (needsReload(combatant)) {
@@ -65,19 +64,4 @@ public class StationaryCombatStrategy implements CombatStrategy {
         }
     }
     
-    private boolean isAlignedForShot(double dx, double dy, Direction direction) {
-        double absDx = Math.abs(dx);
-        double absDy = Math.abs(dy);
-        
-        switch (direction) {
-            case LEFT:
-            case RIGHT:
-                return absDy < ALIGNMENT_THRESHOLD;
-            case UP:
-            case DOWN:
-                return absDx < ALIGNMENT_THRESHOLD;
-            default:
-                return false;
-        }
-    }
 }
